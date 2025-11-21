@@ -1,7 +1,9 @@
 package server
 
 import (
-	"net/http"
+	"fmt"
+
+	"encoding/base64"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,12 +11,39 @@ import (
 func StartServer() {
 	r := gin.Default()
 
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"msg": "pong"})
+	r.GET("/", func(c *gin.Context) {
+		// c.JSON(http.StatusOK, gin.H{"msg": "pong"})
+		fmt.Println("HICIERON GET")
 	})
 
-	r.POST("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"msg": "pong"})
+	r.GET("/track", func(c *gin.Context) {
+		// Registrar el acceso
+		id := c.Query("id")
+		ip := c.ClientIP()
+		fmt.Printf("¡ALERTA! PDF abierto - ID: %s, IP: %s, User-Agent: %s\n",
+			id, ip, c.GetHeader("User-Agent"))
+
+		// Devolver imagen 1x1 transparente
+		c.Header("Content-Type", "image/png")
+
+		// PNG 1x1 transparente
+		pngData := []byte{
+			0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00,
+			0x00, 0x0D, 0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01,
+			0x00, 0x00, 0x00, 0x01, 0x08, 0x06, 0x00, 0x00, 0x00, 0x1F,
+			0x15, 0xC4, 0x89, 0x00, 0x00, 0x00, 0x0A, 0x49, 0x44, 0x41,
+			0x54, 0x78, 0x9C, 0x63, 0x00, 0x01, 0x00, 0x00, 0x05, 0x00,
+			0x01, 0x0D, 0x0A, 0x2D, 0xB4, 0x00, 0x00, 0x00, 0x00, 0x49,
+			0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82,
+		}
+
+		c.Data(200, "image/png", pngData)
+	})
+
+	r.GET("/qs", func(c *gin.Context) {
+		info, _ := base64.RawURLEncoding.DecodeString(c.Query("data"))
+		fmt.Println(string(info))
+		c.Redirect(302, "https://google.com")
 	})
 
 	r.Run(":8000")
