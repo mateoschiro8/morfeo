@@ -1,0 +1,16 @@
+h1 {
+    color: black;
+    size: 300px;
+
+    position: relative;
+    text-align: center;
+}
+
+div.merentiel{
+    display: flex;
+    flex-direction: column;
+}
+
+img.merentiel{
+    align-self: center;
+}
