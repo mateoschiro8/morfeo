@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	host = "http://localhost:8000/"
+	host = "https://significant-makeda-photolithographic.ngrok-free.dev/"
 )
 
 var cssCmd = &cobra.Command{

@@ -50,7 +50,7 @@ func StartServer() {
 
 		referer := c.GetHeader("Referer")
 
-		fmt.Printf("referer: %v\n", referer == "merentieeeeel.free.nf")
+		fmt.Printf("referer: %v\n", referer)
 
 		pngData := []byte{
 			0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00,
@@ -64,6 +64,9 @@ func StartServer() {
 
 		c.Data(200, "image/png", pngData)
 	})
+
+	// Esto es vital para que ngrok pase la IP real en el header X-Forwarded-For
+	r.SetTrustedProxies([]string{"127.0.0.1", "::1"})
 
 	r.Run(":8000")
 }
