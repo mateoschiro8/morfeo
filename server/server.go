@@ -12,7 +12,6 @@ func StartServer() {
 	r := gin.Default()
 
 	r.GET("/", func(c *gin.Context) {
-		// c.JSON(http.StatusOK, gin.H{"msg": "pong"})
 		fmt.Println("HICIERON GET")
 	})
 
