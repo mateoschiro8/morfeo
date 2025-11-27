@@ -1,12 +1,14 @@
 package cmd
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"time"
 
+	"github.com/mateoschiro8/morfeo/server/types"
 	"github.com/spf13/cobra"
 )
 
@@ -14,13 +16,38 @@ var rootCmd = &cobra.Command{
 	Use: "morfeo",
 }
 
-var (
-	ngrokurl = GetNgrokUrl()
-)
-
 func Execute() {
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
 	_ = rootCmd.Execute()
+}
+
+// Para hacer el post y crear nuevos tokens
+func CreateToken(msg string, red string) string {
+
+	data := types.UserInput{
+		Msg:      msg,
+		Redirect: red,
+	}
+
+	body, err := json.Marshal(data)
+	if err != nil {
+		panic(err)
+	}
+
+	resp, err := http.Post("https://localhost:8000/tokens", "application/json", bytes.NewBuffer(body))
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+
+	respBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+
+	respString := string(respBytes)
+	fmt.Println(respString)
+	return respString
 }
 
 type NgrokTunnel struct {
@@ -31,7 +58,7 @@ type NgrokResponse struct {
 	Tunnels []NgrokTunnel `json:"tunnels"`
 }
 
-func GetNgrokUrl() string{
+func GetNgrokUrl() string {
 
 	//Se loopea por las dudas de que falle la respuesta de ngrok
 	for i := 0; i < 5; i++ {
@@ -54,7 +81,7 @@ func GetNgrokUrl() string{
 		if data.Tunnels[0].PublicURL != "" {
 			return data.Tunnels[0].PublicURL
 		}
-		
+
 	}
 
 	panic("NO ENCONTRE PUBLIC URL")

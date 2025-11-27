@@ -2,10 +2,16 @@ package server
 
 import (
 	"fmt"
-
-	"encoding/base64"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mateoschiro8/morfeo/server/handlers"
+	"github.com/mateoschiro8/morfeo/server/types"
+)
+
+var (
+	idx    = 0
+	tokens = make(map[string]*types.UserInput)
 )
 
 func StartServer() {
@@ -15,37 +21,19 @@ func StartServer() {
 		fmt.Println("HICIERON GET")
 	})
 
-	r.GET("/track", func(c *gin.Context) {
-		// Registrar el acceso
-		id := c.Query("id")
-		ip := c.ClientIP()
-		fmt.Printf("¡ALERTA! PDF abierto - ID: %s, IP: %s, User-Agent: %s\n",
-			id, ip, c.GetHeader("User-Agent"))
+	r.POST("/tokens", handleNewToken)
 
-		// Devolver imagen 1x1 transparente
-		c.Header("Content-Type", "image/png")
+	handlers.HandleQRs(r)
+	handlers.HandleIMGs(r)
+	handlers.HandleCSS(r)
+	handlers.HandlePDFs(r)
 
-		// PNG 1x1 transparente
-		pngData := []byte{
-			0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00,
-			0x00, 0x0D, 0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01,
-			0x00, 0x00, 0x00, 0x01, 0x08, 0x06, 0x00, 0x00, 0x00, 0x1F,
-			0x15, 0xC4, 0x89, 0x00, 0x00, 0x00, 0x0A, 0x49, 0x44, 0x41,
-			0x54, 0x78, 0x9C, 0x63, 0x00, 0x01, 0x00, 0x00, 0x05, 0x00,
-			0x01, 0x0D, 0x0A, 0x2D, 0xB4, 0x00, 0x00, 0x00, 0x00, 0x49,
-			0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82,
-		}
-
-		c.Data(200, "image/png", pngData)
+	// COMO EXTRAER EL ID DE LA URL:
+	r.GET("/:id", func(c *gin.Context) {
+		id := c.Param("id")
+		c.String(200, "id = %s", id)
+		fmt.Println(tokens[id].Msg)
 	})
-
-	r.GET("/qs", func(c *gin.Context) {
-		info, _ := base64.RawURLEncoding.DecodeString(c.Query("data"))
-		fmt.Println(string(info))
-		c.Redirect(302, "https://google.com")
-	})
-
-	r.GET("/fondo", CssCanary)
 
 	// Esto es vital para que ngrok pase la IP real en el header X-Forwarded-For
 	r.SetTrustedProxies([]string{"127.0.0.1", "::1"})
@@ -53,25 +41,18 @@ func StartServer() {
 	r.Run(":8000")
 }
 
-func CssCanary (c *gin.Context) {
-	
-		referer := c.GetHeader("Referer")
+func handleNewToken(c *gin.Context) {
 
-		if referer == "" {
-			fmt.Printf("Referer esta vacio \n")
-		} else if referer != "https://merentieeeeel.free.nf/" {
-			fmt.Printf("Se detecto una pagina clonada con url: %v\n", referer)
-		}
-	
-		pngData := []byte{
-			0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00,
-			0x00, 0x0D, 0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01,
-			0x00, 0x00, 0x00, 0x01, 0x08, 0x06, 0x00, 0x00, 0x00, 0x1F,
-			0x15, 0xC4, 0x89, 0x00, 0x00, 0x00, 0x0A, 0x49, 0x44, 0x41,
-			0x54, 0x78, 0x9C, 0x63, 0x00, 0x01, 0x00, 0x00, 0x05, 0x00,
-			0x01, 0x0D, 0x0A, 0x2D, 0xB4, 0x00, 0x00, 0x00, 0x00, 0x49,
-			0x45, 0x4E, 0x44, 0xAE, 0x42, 0x60, 0x82,
-		}
-	
-		c.Data(200, "image/png", pngData)
+	var input types.UserInput
+
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(400, gin.H{"error": err.Error()})
+		return
 	}
+
+	tokens[strconv.Itoa(idx)] = &input
+
+	c.String(200, "%d", idx)
+
+	idx++
+}

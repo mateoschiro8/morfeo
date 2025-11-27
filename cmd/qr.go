@@ -27,6 +27,8 @@ func init() {
 
 func generateQRCode(cmd *cobra.Command, args []string) {
 
+	fmt.Println(CreateToken("asdasd", "aslkdfj"))
+
 	data := "http://localhost:8000" + "/qs?data=" + base64.RawURLEncoding.EncodeToString([]byte(id))
 
 	qrCode, err := qr.Encode(data, qr.M, qr.Auto)
