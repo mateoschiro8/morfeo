@@ -36,3 +36,5 @@ ese comando matara a cualquier ngrok corriendo en el sistema operativo, solo fun
 si un paquete tiene ese header cuando se manda a ngrok, el resultado es el archivo directo, sin la pestaño de aviso. 
 En el caso de css Firefox arma el paquete http por ello no tiene ese campo, el parche es que si uno abre el inspector, va a la pestaña red y ve el pedido get que fallo puede darle click izquierdo y editar el paquete y reenviar, ahi puede agregar el header:
     : true
+
+Otra forma es testear usando chrome del celular pero antes tenes que abrir el link para que se cree la cookie de que confias el link
