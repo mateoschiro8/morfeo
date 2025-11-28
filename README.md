@@ -23,7 +23,7 @@ a donde redirigir, etc etc
     - Ver de usar una base de datos (La mas simple podría ser MongoDB)
     - Pasar el proyecto a un docker
     - Acomodar las variables globales del cmd (se pueden reutilizar)
-
+    - Hacer una función Avisar() en el package handlers que todos importen y usen
 
 # Correr Ngrok
     ngrok http 8000 --inspect-addr=127.0.0.1:4040
