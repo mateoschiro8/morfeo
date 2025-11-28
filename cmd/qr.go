@@ -5,8 +5,6 @@ import (
 	"image/png"
 	"os"
 
-	"encoding/base64"
-
 	"github.com/boombuler/barcode"
 	"github.com/boombuler/barcode/qr"
 	"github.com/spf13/cobra"
@@ -14,20 +12,22 @@ import (
 
 var qrCmd = &cobra.Command{
 	Use:   "qr",
-	Short: "Genera el honeytoken de pdf",
+	Short: "Genera el honeytoken de qr",
 	Run:   generateQRCode,
 }
 
-var id string
-
 func init() {
-	qrCmd.Flags().StringVar(&id, "id", "", "Identificador del qr")
+	qrCmd.Flags().StringVar(&msg, "msg", "", "Identificador del qr")
+	qrCmd.Flags().StringVar(&redirect, "redirect", "http://www.google.com", "Sitio al cual redirigir")
+	qrCmd.MarkFlagRequired("msg")
 	rootCmd.AddCommand(qrCmd)
 }
 
 func generateQRCode(cmd *cobra.Command, args []string) {
 
-	data := "http://localhost:8000" + "/qs?data=" + base64.RawURLEncoding.EncodeToString([]byte(id))
+	tokenID := CreateToken(msg, redirect)
+
+	data := serverURL + "/qrs/" + tokenID
 
 	qrCode, err := qr.Encode(data, qr.M, qr.Auto)
 	if err != nil {

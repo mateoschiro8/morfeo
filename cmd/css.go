@@ -10,7 +10,6 @@ import (
 
 var (
 	url_original = ""
-	msg          = ""
 )
 
 var cssCmd = &cobra.Command{

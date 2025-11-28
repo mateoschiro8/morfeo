@@ -18,7 +18,7 @@ a donde redirigir, etc etc
 
 
 # TODOs
-    - Rehacer los tokens con la nueva base. Tokens restantes: pdf, img, qrs, css. Proximos: bin 
+    - Rehacer los tokens con la nueva base. Tokens restantes: pdf, img, css. Proximos: bin 
     - Iniciar Ngrok con el metodo StartServer()
     - Ver de usar una base de datos (La mas simple podría ser MongoDB)
     - Pasar el proyecto a un docker

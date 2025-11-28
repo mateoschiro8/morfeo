@@ -1,17 +1,15 @@
 package handlers
 
 import (
-	"encoding/base64"
-	"fmt"
-
 	"github.com/gin-gonic/gin"
+	"github.com/mateoschiro8/morfeo/server/types"
 )
 
 func HandleQRs(r *gin.Engine) {
-	r.GET("/qs", func(c *gin.Context) {
-		info, _ := base64.RawURLEncoding.DecodeString(c.Query("data"))
-		fmt.Println(string(info))
-		c.Redirect(302, "https://google.com")
+	r.GET("/qrs/:tokenID", func(c *gin.Context) {
+		tokenID := c.Param("tokenID")
+		var token *types.UserInput = TC.GetToken(tokenID)
+		Alert(token.Msg)
+		c.Redirect(302, token.Redirect)
 	})
-
 }

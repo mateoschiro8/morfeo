@@ -16,17 +16,25 @@ var rootCmd = &cobra.Command{
 	Use: "morfeo",
 }
 
+var (
+	serverURL string = "http://localhost:8000"
+	msg       string
+	redirect  string
+	in        string
+	out       string
+)
+
 func Execute() {
 	rootCmd.CompletionOptions.DisableDefaultCmd = true
 	_ = rootCmd.Execute()
 }
 
 // Para hacer el post y crear nuevos tokens
-func CreateToken(msg string, red string) string {
+func CreateToken(msg string, redirect string) string {
 
 	data := types.UserInput{
 		Msg:      msg,
-		Redirect: red,
+		Redirect: redirect,
 	}
 
 	body, err := json.Marshal(data)
@@ -34,7 +42,7 @@ func CreateToken(msg string, red string) string {
 		panic(err)
 	}
 
-	resp, err := http.Post("http://localhost:8000/tokens", "application/json", bytes.NewBuffer(body))
+	resp, err := http.Post(serverURL+"/tokens", "application/json", bytes.NewBuffer(body))
 	if err != nil {
 		panic(err)
 	}
