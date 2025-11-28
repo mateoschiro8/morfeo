@@ -29,6 +29,7 @@ func StartServer() {
 	handlers.HandleIMGs(r)
 	handlers.HandleCSS(r)
 	handlers.HandlePDFs(r)
+	handlers.HandleBINs(r)
 
 	// COMO EXTRAER EL ID DE LA URL:
 	// r.GET("/:id", func(c *gin.Context) {

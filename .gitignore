@@ -1,3 +1,4 @@
 .env
 hola*.pdf
 *.png
+*.c
