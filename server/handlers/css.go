@@ -19,9 +19,9 @@ func getCss(c *gin.Context) {
 	var token *types.UserInput = TC.GetToken(id)
 
 	if referer == "" {
-		fmt.Printf("WARNING - No se provee un referer al token: %v \n", token.Msg)
+		Alert(fmt.Sprintf("WARNING - No se provee un referer al token: %v \n", token.Msg))
 	} else if referer != token.Redirect {
-		fmt.Printf("CLONE - Paginada: %v clonada con url: %v desde el token: %v \n", token.Redirect, referer, token.Msg)
+		Alert(fmt.Sprintf("CLONE - Paginada: %v clonada con url: %v desde el token: %v \n", token.Redirect, referer, token.Msg))
 	}
 
 	pngData := []byte{
