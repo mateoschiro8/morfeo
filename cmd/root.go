@@ -34,7 +34,7 @@ func CreateToken(msg string, red string) string {
 		panic(err)
 	}
 
-	resp, err := http.Post("https://localhost:8000/tokens", "application/json", bytes.NewBuffer(body))
+	resp, err := http.Post("http://localhost:8000/tokens", "application/json", bytes.NewBuffer(body))
 	if err != nil {
 		panic(err)
 	}
