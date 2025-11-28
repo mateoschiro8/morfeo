@@ -4,25 +4,24 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/mateoschiro8/morfeo/server/types"
 )
 
 func HandleCSS(r *gin.Engine) {
-	r.POST("/fondo", postCss)
-	r.GET("/fondo", getCss)
+	r.GET("/fondo/:id", getCss)
 }
 
-func postCss(c *gin.Context) {
-
-}
 
 func getCss(c *gin.Context) {
-
+	id := c.Param("id")
 	referer := c.GetHeader("Referer")
 
+	var token *types.UserInput = TC.GetToken(id)
+
 	if referer == "" {
-		fmt.Printf("Referer esta vacio \n")
-	} else if referer != "https://merentieeeeel.free.nf/" {
-		fmt.Printf("Se detecto una pagina clonada con url: %v\n", referer)
+		fmt.Printf("WARNING - No se provee un referer al token: %v \n", token.Msg)
+	} else if referer != token.Redirect {
+		fmt.Printf("CLONE - Paginada: %v clonada con url: %v desde el token: %v \n", token.Redirect, referer, token.Msg)
 	}
 
 	pngData := []byte{

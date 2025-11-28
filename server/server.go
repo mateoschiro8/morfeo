@@ -17,6 +17,8 @@ var (
 func StartServer() {
 	r := gin.Default()
 
+	handlers.LoadTokenControler(&tokens)
+
 	r.GET("/", func(c *gin.Context) {
 		fmt.Println("HICIERON GET")
 	})
@@ -29,11 +31,11 @@ func StartServer() {
 	handlers.HandlePDFs(r)
 
 	// COMO EXTRAER EL ID DE LA URL:
-	r.GET("/:id", func(c *gin.Context) {
-		id := c.Param("id")
-		c.String(200, "id = %s", id)
-		fmt.Println(tokens[id].Msg)
-	})
+	// r.GET("/:id", func(c *gin.Context) {
+	// 	id := c.Param("id")
+	// 	c.String(200, "id = %s", id)
+	// 	fmt.Println(tokens[id].Msg)
+	// })
 
 	// Esto es vital para que ngrok pase la IP real en el header X-Forwarded-For
 	r.SetTrustedProxies([]string{"127.0.0.1", "::1"})

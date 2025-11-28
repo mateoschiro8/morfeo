@@ -24,10 +24,15 @@ a donde redirigir, etc etc
     - Pasar el proyecto a un docker
     - Acomodar las variables globales del cmd (se pueden reutilizar)
     - Hacer una función Avisar() en el package handlers que todos importen y usen
+    - Provar alternativas a Ngrok que no manden un text para evitar fishing (posiblemente servero)
 
 # Correr Ngrok
-    ngrok http 8000 --inspect-addr=127.0.0.1:4040
-     Usamos la flag de inspect-addr para que solamente pueda estar en esa y si el puerto esta ocupado falle 
+Usamos la flag de inspect-addr para que solamente pueda estar en esa y si el puerto esta ocupado falle 
+    ngrok http 8000 --inspect=False
 
+ese comando matara a cualquier ngrok corriendo en el sistema operativo, solo funciona en linux
     killall ngrok
-     ese comando matara a cualquier ngrok corriendo en el sistema operativo, solo funciona en linux
+
+si un paquete tiene ese header cuando se manda a ngrok, el resultado es el archivo directo, sin la pestaño de aviso. 
+En el caso de css Firefox arma el paquete http por ello no tiene ese campo, el parche es que si uno abre el inspector, va a la pestaña red y ve el pedido get que fallo puede darle click izquierdo y editar el paquete y reenviar, ahi puede agregar el header:
+    : true
