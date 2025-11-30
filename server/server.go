@@ -1,12 +1,16 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mateoschiro8/morfeo/server/handlers"
 	"github.com/mateoschiro8/morfeo/server/types"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var (
@@ -23,10 +27,24 @@ func StartServer() {
 		fmt.Println("HICIERON GET")
 	})
 
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb://root:example@mongo:27017/?authSource=admin"))
+	if err != nil {
+		panic(err)
+	}
+
+	collection := client.Database("morfeo").Collection("tokens")
+	tokenController := handlers.NewTokenController(collection)
+
+	// Middleware para que el controller esté disponible en todos los handlers
+	r.Use(func(c *gin.Context) {
+		c.Set("tokenController", tokenController)
+		c.Next()
+	})
+
 	r.POST("/tokens", handleNewToken)
 
 	handlers.HandleQRs(r)
-	handlers.HandleIMGs(r)
+	handlers.HandleIMGs(r)var token *types.UserInput = TC.GetToken(tokenID)
 	handlers.HandleCSS(r)
 	handlers.HandlePDFs(r)
 	handlers.HandleBINs(r)
@@ -53,9 +71,23 @@ func handleNewToken(c *gin.Context) {
 		return
 	}
 
+	controller := c.MustGet("tokenController").(*handlers.TokenController)
+
+	res, err := controller.Collection.InsertOne(context.Background(), input)
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+
+	oid, ok := res.InsertedID.(primitive.ObjectID)
+	if !ok {
+		c.JSON(500, gin.H{"error": "could not cast inserted ID"})
+		return
+	}
+
 	tokens[strconv.Itoa(idx)] = &input
 
-	c.String(200, "%d", idx)
+	c.String(200, "%s", oid.Hex())
 
 	idx++
 }
