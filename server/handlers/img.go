@@ -1,19 +1,24 @@
 package handlers
 
 import (
-	"fmt"
-
 	"github.com/gin-gonic/gin"
 )
 
 func HandleIMGs(r *gin.Engine) {
 
 	r.GET("/track", func(c *gin.Context) {
-		// Registrar el acceso
-		id := c.Query("id")
-		ip := c.ClientIP()
-		fmt.Printf("¡ALERTA! PDF abierto - ID: %s, IP: %s, User-Agent: %s\n",
-			id, ip, c.GetHeader("User-Agent"))
+
+		tokenID := c.Query("id")
+		// ip := c.ClientIP()
+
+		controller := c.MustGet("tokenController").(*TokenController)
+		token, err := controller.GetToken(tokenID)
+		if err != nil {
+			c.JSON(404, gin.H{"error": "token not found"})
+			return
+		}
+
+		Alert(token.Msg)
 
 		// Devolver imagen 1x1 transparente
 		c.Header("Content-Type", "image/png")

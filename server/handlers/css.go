@@ -4,19 +4,22 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mateoschiro8/morfeo/server/types"
 )
 
 func HandleCSS(r *gin.Engine) {
 	r.GET("/fondo/:id", getCss)
 }
 
-
 func getCss(c *gin.Context) {
-	id := c.Param("id")
+	tokenID := c.Param("id")
 	referer := c.GetHeader("Referer")
 
-	var token *types.UserInput = TC.GetToken(id)
+	controller := c.MustGet("tokenController").(*TokenController)
+	token, err := controller.GetToken(tokenID)
+	if err != nil {
+		c.JSON(404, gin.H{"error": "token not found"})
+		return
+	}
 
 	if referer == "" {
 		Alert(fmt.Sprintf("WARNING - No se provee un referer al token: %v \n", token.Msg))

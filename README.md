@@ -18,12 +18,10 @@ a donde redirigir, etc etc
 
 
 # TODOs
-    - Rehacer los tokens con la nueva base. Tokens restantes: pdf, img, css. Proximos: bin 
+    - Rehacer los tokens con la nueva base, y pasar a que usen el GetToken como el de qrs/bins. Tokens restantes: pdf, img, css. Proximos: 
     - Iniciar Ngrok con el metodo StartServer()
-    - Ver de usar una base de datos (La mas simple podría ser MongoDB)
     - Pasar el proyecto a un docker
     - Acomodar las variables globales del cmd (se pueden reutilizar)
-    - Hacer una función Avisar() en el package handlers que todos importen y usen
     - Provar alternativas a Ngrok que no manden un text para evitar fishing (posiblemente servero)
 
 # Correr Ngrok

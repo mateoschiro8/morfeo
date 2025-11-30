@@ -16,7 +16,6 @@ services:
   app:
     build: .
     container_name: golang-app
-    command: go run main.go server
     restart: unless-stopped
     depends_on:
       - mongo

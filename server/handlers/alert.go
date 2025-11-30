@@ -6,5 +6,5 @@ import (
 )
 
 func Alert(msg string) {
-	fmt.Println("ALERTA! Fue activado el token: " + strings.ToLower(msg))
+	fmt.Println("ALERTAA! Fue activado el token: " + strings.ToLower(msg))
 }

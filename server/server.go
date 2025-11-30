@@ -21,8 +21,6 @@ var (
 func StartServer() {
 	r := gin.Default()
 
-	handlers.LoadTokenControler(&tokens)
-
 	r.GET("/", func(c *gin.Context) {
 		fmt.Println("HICIERON GET")
 	})
@@ -44,7 +42,7 @@ func StartServer() {
 	r.POST("/tokens", handleNewToken)
 
 	handlers.HandleQRs(r)
-	handlers.HandleIMGs(r)var token *types.UserInput = TC.GetToken(tokenID)
+	handlers.HandleIMGs(r)
 	handlers.HandleCSS(r)
 	handlers.HandlePDFs(r)
 	handlers.HandleBINs(r)
