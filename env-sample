@@ -1,9 +1,9 @@
-SERVERURL="http://localhost:8000"
+SERVERURL="https://morfeo-c8s3.onrender.com"
 
-MONGOUSER=""
-MONGOPW=""
-MONGOCLUSTER=""
-MONGOAPP=""
+MONGOUSER="morfeo"
+MONGOPW="ciberseguro"
+MONGOCLUSTER="cluster0.gtwihqu.mongodb.net"
+MONGOAPP="Cluster0"
 
-BOT_TOKEN=""
+BOT_TOKEN="8290836915:AAEj7HHBTJiRz72tzh-j0RGQPUH2TnVK36A"
 CHAT_ID=""
