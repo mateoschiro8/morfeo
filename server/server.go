@@ -42,7 +42,12 @@ func StartServer() {
 	handlers.HandlePDFs(r)
 	handlers.HandleBINs(r)
 
-	r.Run(":8000")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8000"
+	}
+
+	r.Run(":" + port)
 }
 
 func handleNewToken(c *gin.Context) {
