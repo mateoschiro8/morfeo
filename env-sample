@@ -1,0 +1,6 @@
+SERVERURL="http://localhost:8000"
+
+MONGOUSER=""
+MONGOPW=""
+MONGOCLUSTER=""
+MONGOAPP=""

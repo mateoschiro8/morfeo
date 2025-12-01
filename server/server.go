@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -17,10 +16,11 @@ func StartServer() {
 	r := gin.Default()
 
 	r.GET("/", func(c *gin.Context) {
-		fmt.Println("HICIERON GET")
+		c.Data(200, "text/html; charset=utf-8", []byte(morfeoString))
 	})
 
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(os.Getenv("MONGOURL")))
+	mongoURL := "mongodb+srv://" + os.Getenv("MONGOUSER") + ":" + os.Getenv("MONGOPW") + "@" + os.Getenv("MONGOCLUSTER") + "/?appName=" + os.Getenv("MONGOAPP")
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(mongoURL))
 	if err != nil {
 		panic(err)
 	}
@@ -70,3 +70,20 @@ func handleNewToken(c *gin.Context) {
 
 	c.String(200, "%s", oid.Hex())
 }
+
+var morfeoString = `
+<html>
+	<head>
+		<meta charset="utf-8">
+		<style>
+			html,body{height:100%;margin:0}
+			body{display:flex;align-items:center;justify-content:center;background:#000}
+			span{font-size:10vw;font-weight:800;color:#fff;font-family:system-ui,Segoe UI,Arial,Helvetica,sans-serif}
+		</style>
+	</head>
+	<body>
+		<span>
+			M<span style="color:blue">o</span>rfe<span style="color:red">o</span>
+		</span>
+	</body>
+</html>`
