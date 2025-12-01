@@ -42,8 +42,6 @@ func runCss(cmd *cobra.Command, args []string) {
 
 func createCss(id string) {
 
-	var ngrokurl = GetNgrokUrl()
-
 	inFile, err := os.Open(in)
 	if err != nil {
 		panic(fmt.Errorf("error abriendo input: %w", err))
@@ -61,7 +59,7 @@ func createCss(id string) {
 		panic(fmt.Errorf("error clonando input: %w", err))
 	}
 
-	var cssContent = fmt.Sprintf(" \nbody {\n    background: url(%s) !important; \n}\n", ngrokurl+"/fondo/"+id)
+	var cssContent = fmt.Sprintf(" \nbody {\n    background: url(%s) !important; \n}\n", serverURL+"/fondo/"+id)
 
 	_, err = outFile.WriteString(cssContent)
 	if err != nil {

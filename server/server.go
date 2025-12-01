@@ -3,7 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
-	"strconv"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mateoschiro8/morfeo/server/handlers"
@@ -13,11 +13,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var (
-	idx    = 0
-	tokens = make(map[string]*types.UserInput)
-)
-
 func StartServer() {
 	r := gin.Default()
 
@@ -25,12 +20,12 @@ func StartServer() {
 		fmt.Println("HICIERON GET")
 	})
 
-	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI("mongodb://root:example@mongo:27017/?authSource=admin"))
+	client, err := mongo.Connect(context.Background(), options.Client().ApplyURI(os.Getenv("MONGOURL")))
 	if err != nil {
 		panic(err)
 	}
 
-	collection := client.Database("morfeo").Collection("tokens")
+	collection := client.Database("fcen").Collection("tokens")
 	tokenController := handlers.NewTokenController(collection)
 
 	// Middleware para que el controller esté disponible en todos los handlers
@@ -46,16 +41,6 @@ func StartServer() {
 	handlers.HandleCSS(r)
 	handlers.HandlePDFs(r)
 	handlers.HandleBINs(r)
-
-	// COMO EXTRAER EL ID DE LA URL:
-	// r.GET("/:id", func(c *gin.Context) {
-	// 	id := c.Param("id")
-	// 	c.String(200, "id = %s", id)
-	// 	fmt.Println(tokens[id].Msg)
-	// })
-
-	// Esto es vital para que ngrok pase la IP real en el header X-Forwarded-For
-	r.SetTrustedProxies([]string{"127.0.0.1", "::1"})
 
 	r.Run(":8000")
 }
@@ -83,9 +68,5 @@ func handleNewToken(c *gin.Context) {
 		return
 	}
 
-	tokens[strconv.Itoa(idx)] = &input
-
 	c.String(200, "%s", oid.Hex())
-
-	idx++
 }

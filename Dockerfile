@@ -1,6 +1,4 @@
-FROM golang:1.23 AS build
-
-ENV GOTOOLCHAIN=auto
+FROM golang:1.24.9-alpine AS build
 
 WORKDIR /app
 
@@ -9,9 +7,6 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -o app .
+RUN go build -o app .
 
-FROM alpine:3.19
-WORKDIR /root/
-COPY --from=build /app/app .
 ENTRYPOINT ["./app", "server"]
