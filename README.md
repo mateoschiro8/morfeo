@@ -1,6 +1,11 @@
 # morfeo
 Un generador de Honeytokens. IT IS IN PROCESS
 
+## Desarrollo local
+
+Correr ```cp env-sample .env```, completar las variables y luego ```docker compose up``` para levantar el server y ```go run main.go {cmd}``` para la cli.
+
+
 LINKS:
 
 https://github.com/spf13/cobra/blob/v1.10.1/site/content/user_guide.md
@@ -19,20 +24,5 @@ a donde redirigir, etc etc
 
 # TODOs
     - Rehacer los tokens con la nueva base, y pasar a que usen el GetToken como el de qrs/bins. Tokens restantes: pdf, img, css. Proximos: 
-    - Iniciar Ngrok con el metodo StartServer()
-    - Pasar el proyecto a un docker
     - Acomodar las variables globales del cmd (se pueden reutilizar)
-    - Provar alternativas a Ngrok que no manden un text para evitar fishing (posiblemente servero)
-
-# Correr Ngrok
-Usamos la flag de inspect-addr para que solamente pueda estar en esa y si el puerto esta ocupado falle 
-    ngrok http 8000 --inspect=False
-
-ese comando matara a cualquier ngrok corriendo en el sistema operativo, solo funciona en linux
-    killall ngrok
-
-si un paquete tiene ese header cuando se manda a ngrok, el resultado es el archivo directo, sin la pestaño de aviso. 
-En el caso de css Firefox arma el paquete http por ello no tiene ese campo, el parche es que si uno abre el inspector, va a la pestaña red y ve el pedido get que fallo puede darle click izquierdo y editar el paquete y reenviar, ahi puede agregar el header:
-    : true
-
-Otra forma es testear usando chrome del celular pero antes tenes que abrir el link para que se cree la cookie de que confias el link
+   

@@ -9,7 +9,6 @@ func HandleIMGs(r *gin.Engine) {
 	r.GET("/track", func(c *gin.Context) {
 
 		tokenID := c.Query("id")
-		// ip := c.ClientIP()
 
 		controller := c.MustGet("tokenController").(*TokenController)
 		token, err := controller.GetToken(tokenID)
@@ -18,12 +17,10 @@ func HandleIMGs(r *gin.Engine) {
 			return
 		}
 
-		Alert(token.Msg)
+		Alert(token.Msg, c.ClientIP())
 
-		// Devolver imagen 1x1 transparente
 		c.Header("Content-Type", "image/png")
 
-		// PNG 1x1 transparente
 		pngData := []byte{
 			0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A, 0x00, 0x00,
 			0x00, 0x0D, 0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01,

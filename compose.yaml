@@ -1,0 +1,18 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      SERVERURL: ${SERVERURL}
+      MONGOUSER: ${MONGOUSER}
+      MONGOPW: ${MONGOPW}
+      MONGOCLUSTER: ${MONGOCLUSTER}
+      MONGOAPP: ${MONGOAPP}
+      BOT_TOKEN: ${BOT_TOKEN}
+      CHAT_ID: ${CHAT_ID}
+      GIN_MODE: "release"
+    container_name: golang-gin-app
+    ports:
+      - "8000:8000"  
+    restart: no

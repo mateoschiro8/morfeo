@@ -15,7 +15,7 @@ func HandleQRs(r *gin.Engine) {
 			return
 		}
 
-		Alert(token.Msg)
+		Alert(token.Msg, c.ClientIP())
 		c.Redirect(302, token.Redirect)
 	})
 }

@@ -22,9 +22,9 @@ func getCss(c *gin.Context) {
 	}
 
 	if referer == "" {
-		Alert(fmt.Sprintf("WARNING - No se provee un referer al token: %v \n", token.Msg))
+		Alert(fmt.Sprintf("WARNING - No se provee un referer al token: %v \n", token.Msg), c.ClientIP())
 	} else if referer != token.Redirect {
-		Alert(fmt.Sprintf("CLONE - Paginada: %v clonada con url: %v desde el token: %v \n", token.Redirect, referer, token.Msg))
+		Alert(fmt.Sprintf("CLONE - Paginada: %v clonada con url: %v desde el token: %v \n", token.Redirect, referer, token.Msg), c.ClientIP())
 	}
 
 	pngData := []byte{

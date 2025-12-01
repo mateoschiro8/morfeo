@@ -15,6 +15,6 @@ func HandleBINs(r *gin.Engine) {
 			return
 		}
 
-		Alert(token.Msg)
+		Alert(token.Msg, c.ClientIP())
 	})
 }
