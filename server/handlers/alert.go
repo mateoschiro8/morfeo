@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"strings"
 )
 
 type SendMessageReq struct {
@@ -15,9 +14,9 @@ type SendMessageReq struct {
 	Text   string `json:"text"`
 }
 
-func Alert(msg string, ip string) {
+func Alert(msg string) {
 
-	alertText := "ALERTA! Fue activado el token " + strings.ToLower(msg) + " desde la IP: " + ip
+	alertText := "ALERTA! \n" + msg
 	fmt.Println(alertText)
 
 	token := os.Getenv("BOT_TOKEN")

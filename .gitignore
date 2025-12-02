@@ -5,3 +5,4 @@ hola*.pdf
 out/
 pag-ejemplo/
 pag-ejemplo/*
+*.css

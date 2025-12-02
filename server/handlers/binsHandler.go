@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"strings"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,7 +16,7 @@ func HandleBINs(r *gin.Engine) {
 			c.JSON(404, gin.H{"error": "token not found"})
 			return
 		}
-
-		Alert(token.Msg, c.ClientIP())
+		alertText := "Fue activado el token " + strings.ToLower(token.Msg) + " desde la IP: " + c.ClientIP()
+		Alert(alertText)
 	})
 }

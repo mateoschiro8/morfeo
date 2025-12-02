@@ -32,7 +32,7 @@ func init() {
 
 func runCss(cmd *cobra.Command, args []string) {
 	if out == "" {
-		out = "out/" + in
+		out = "new_" + in
 	}
 
 	var id = CreateToken(msg, url_original)

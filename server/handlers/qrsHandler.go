@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"strings"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -14,8 +16,9 @@ func HandleQRs(r *gin.Engine) {
 			c.JSON(404, gin.H{"error": "token not found"})
 			return
 		}
+		alertText := "Fue activado el token " + strings.ToLower(token.Msg) + " desde la IP: " + c.ClientIP()
 
-		Alert(token.Msg, c.ClientIP())
+		Alert(alertText)
 		c.Redirect(302, token.Redirect)
 	})
 }

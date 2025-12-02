@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"strings"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,7 +19,9 @@ func HandleIMGs(r *gin.Engine) {
 			return
 		}
 
-		Alert(token.Msg, c.ClientIP())
+		alertText := "Fue activado el token " + strings.ToLower(token.Msg) + " desde la IP: " + c.ClientIP()
+
+		Alert(alertText)
 
 		c.Header("Content-Type", "image/png")
 
