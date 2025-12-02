@@ -22,10 +22,10 @@ func getCss(c *gin.Context) {
 	}
 
 	if referer == "" {
-		alertText := fmt.Sprintf("Pagina %v potencialmente clonada\n detectado por el token: %v \n", token.Redirect, token.Msg)
+		alertText := fmt.Sprintf("Pagina %v potencialmente clonada\ndetectado por el token: %v \n", token.Redirect, token.Msg)
 		Alert(alertText)
 	} else if referer != token.Redirect {
-		alertText := fmt.Sprintf("Pagina %v clonada con url: \n  %v\n detectado por el token: %v \n", token.Redirect, referer, token.Msg)
+		alertText := fmt.Sprintf("Pagina %v clonada con url: \n  %v\ndetectado por el token: %v \n", token.Redirect, referer, token.Msg)
 		Alert(alertText)
 	}
 
