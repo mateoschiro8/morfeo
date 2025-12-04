@@ -6,3 +6,5 @@ out/
 pag-ejemplo/
 pag-ejemplo/*
 *.css
+demo/
+demo/*
