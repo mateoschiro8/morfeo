@@ -22,14 +22,13 @@ func init() {
 	imageCmd.Flags().StringVar(&msg, "msg", "", "Identificador del honeytoken")
 	imageCmd.Flags().StringVar(&in, "in", "", "Path a la imagen de entrada (opcional, si no hay se crea una imagen vacia)")
 	imageCmd.Flags().StringVar(&out, "out", "honeytoken_image.html", "Path al archivo HTML de salida")
-	imageCmd.Flags().StringVar(&redirect, "redirect", "", "URL a donde redirigir cuando se cargue la imagen")
 	imageCmd.MarkFlagRequired("msg")
 	rootCmd.AddCommand(imageCmd)
 }
 
 func generateImageToken(cmd *cobra.Command, args []string) {
 
-	tokenID := CreateToken(msg, redirect)
+	tokenID := CreateToken(msg, "")
 
 	imageURL := serverURL + "/track?id=" + tokenID
 
@@ -42,19 +41,18 @@ func generateImageToken(cmd *cobra.Command, args []string) {
 
 	if in != "" {
 		fmt.Printf("Generando honeytoken desde imagen: %s\n", in)
-		
+
 		if _, err := os.Stat(in); err != nil {
 			panic(fmt.Errorf("error: la imagen de entrada no existe: %w", err))
 		}
 
-		
 		inputFile, err := os.Open(in)
 		if err != nil {
 			panic(fmt.Errorf("error abriendo imagen para leer dimensiones: %w", err))
 		}
 		imgConfig, _, err := image.DecodeConfig(inputFile)
 		inputFile.Close()
-		
+
 		width := 800
 		height := 600
 		if err == nil {
@@ -91,7 +89,7 @@ img { display: block; width: 100%%; height: 100vh; object-fit: contain; }
 	} else {
 		// si no hay imagen creo html vacio
 		fmt.Println("Generando tracking pixel invisible")
-		
+
 		htmlContent = fmt.Sprintf(`<!DOCTYPE html>
 <html>
 <head>
@@ -126,7 +124,6 @@ body { background: #fff; }
 		panic(fmt.Errorf("error creando archivo SVG: %w", err))
 	}
 
-	
 	fmt.Printf("Token ID: %s\n", tokenID)
 	fmt.Printf("URL del tokenn: %s\n", imageURL)
 	fmt.Printf("Archivo HTML generado: %s\n", out)

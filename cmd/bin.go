@@ -18,7 +18,7 @@ var binCmd = &cobra.Command{
 func init() {
 	binCmd.Flags().StringVar(&msg, "msg", "", "Identificador del qr")
 	binCmd.Flags().StringVar(&in, "in", "", "Path al binario a wrappear")
-	binCmd.Flags().StringVar(&out, "out", "out", "Path al binario de salida")
+	binCmd.Flags().StringVar(&out, "out", "", "Path al binario de salida")
 	binCmd.MarkFlagRequired("msg")
 	binCmd.MarkFlagRequired("in")
 	rootCmd.AddCommand(binCmd)
@@ -38,14 +38,14 @@ func generateBinaryWrapper(cmd *cobra.Command, args []string) {
 	code := strings.ReplaceAll(wrapperTemplate, "{{B64}}", b64)
 	code = strings.ReplaceAll(code, "{{Endpoint}}", serverURL+"/bins/"+tokenID)
 
-	os.WriteFile("wrapper_tmp.go", []byte(code), 0644)
+	os.WriteFile("tmp.go", []byte(code), 0644)
 
-	outCmd := exec.Command("go", "build", "-o", out, "wrapper_tmp.go")
+	outCmd := exec.Command("go", "build", "-o", out, "tmp.go")
 	outCmd.Stdout = os.Stdout
 	outCmd.Stderr = os.Stderr
 	outCmd.Run()
 
-	os.Remove("wrapper_tmp.go")
+	os.Remove("tmp.go")
 }
 
 const wrapperTemplate = `
