@@ -20,7 +20,7 @@ var (
 var pdfCmd = &cobra.Command{
 	Use:   "pdf",
 	Short: "Genera el honeytoken de pdf",
-	Run:   createPDFTokenWithJs,
+	Run:   createPDFTokenWith,
 }
 
 func init() {
@@ -31,13 +31,19 @@ func init() {
 	rootCmd.AddCommand(pdfCmd)
 }
 
-func createPDFTokenWithJs(cmd *cobra.Command, args []string) {
+func checkError(err error){
+	if err != nil {
+        panic(err)
+    }
+}
+
+func createPDFTokenWith(cmd *cobra.Command, args []string) {
 
 	tokenID := CreateToken(msg, "")
 
 	url := serverURL + "/bins/" + tokenID
 
-	js := "app.launchURL('" + url + "', true);"
+	injectedCode := "app.launchURL('" + url + "', true);"
 
 	err := license.SetMeteredKey(offlineLicenseKey)
 	if err != nil {
@@ -45,20 +51,14 @@ func createPDFTokenWithJs(cmd *cobra.Command, args []string) {
 	}
 
 	f, err := os.Open(in)
-	if err != nil {
-		panic(err)
-	}
+	checkError(err)
 	defer f.Close()
 
 	reader, err := model.NewPdfReader(f)
-	if err != nil {
-		panic(err)
-	}
+	checkError(err)
 
 	isEncrypted, err := reader.IsEncrypted()
-	if err != nil {
-		panic(err)
-	}
+	checkError(err)
 
 	if isEncrypted {
 		ok, err := reader.Decrypt([]byte(""))
@@ -68,39 +68,28 @@ func createPDFTokenWithJs(cmd *cobra.Command, args []string) {
 	}
 
 	nPages, err := reader.GetNumPages()
-	if err != nil {
-		panic(err)
-	}
+	checkError(err)
 
 	writer := model.NewPdfWriter()
 
-	// Copiar páginas
 	for i := 1; i <= nPages; i++ {
 		page, err := reader.GetPage(i)
-		if err != nil {
-			panic(err)
-		}
+		checkError(err)
 		err = writer.AddPage(page)
-		if err != nil {
-			panic(err)
-		}
+		checkError(err)
 	}
 
 	// Crear diccionario JavaScript
-	jsDict := core.MakeDict()
-	jsDict.Set("S", core.MakeName("JavaScript"))
-	jsDict.Set("JS", core.MakeString(js))
+	dict := core.MakeDict()
+	dict.Set("S", core.MakeName("JavaScript"))
+	dict.Set("", core.MakeString(injectedCode))
 
-	// Setear OpenAction del documento
-	err = writer.SetOpenAction(jsDict)
-	if err != nil {
-		panic(err)
-	}
+	// Setear OpenAction del documento. Se dispara apenas se abre con acrobat reader
+	err = writer.SetOpenAction(dict)
+	checkError(err)
 
 	out, err := os.Create(out)
-	if err != nil {
-		panic(err)
-	}
+	checkError(err)
 	defer out.Close()
 
 	writer.Write(out)
