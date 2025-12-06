@@ -23,6 +23,7 @@ a donde redirigir, etc etc
 
 
 # TODOs
+    - Que los tokens guarden el CHATID del usuario a quién avisar en en telegram
     - Rehacer los tokens con la nueva base, y pasar a que usen el GetToken como el de qrs/bins. Tokens restantes: pdf, img, css. Proximos: 
     - Acomodar las variables globales del cmd (se pueden reutilizar)
    

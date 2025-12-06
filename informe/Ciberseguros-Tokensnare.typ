@@ -1,4 +1,5 @@
 #set page(paper: "a4")
+#set text(size: 14pt)
 
 #include "src/portada.typ"
 
