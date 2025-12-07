@@ -27,7 +27,7 @@ func init() {
 	cssCmd.MarkFlagRequired("in")
 	cssCmd.MarkFlagRequired("chat")
 	cssCmd.MarkFlagRequired("dominio")
-	cssCmd.MarkFlagRequired("mensaje")
+	cssCmd.MarkFlagRequired("msg")
 
 	rootCmd.AddCommand(cssCmd)
 }
