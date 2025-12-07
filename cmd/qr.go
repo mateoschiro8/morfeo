@@ -18,8 +18,10 @@ var qrCmd = &cobra.Command{
 
 func init() {
 	qrCmd.Flags().StringVar(&msg, "msg", "", "Identificador del qr")
+	qrCmd.Flags().StringVar(&chat,"chat","","Chat ID al cual enviar mensaje al activarse")
 	qrCmd.Flags().StringVar(&redirect, "redirect", "http://www.google.com", "Sitio al cual redirigir")
 	qrCmd.MarkFlagRequired("msg")
+	qrCmd.MarkFlagRequired("chat")
 	rootCmd.AddCommand(qrCmd)
 }
 

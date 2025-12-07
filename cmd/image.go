@@ -20,9 +20,11 @@ var imageCmd = &cobra.Command{
 
 func init() {
 	imageCmd.Flags().StringVar(&msg, "msg", "", "Identificador del honeytoken")
+	imageCmd.Flags().StringVar(&chat, "chat", "", "Chat ID al cual enviar mensaje al activarse")
 	imageCmd.Flags().StringVar(&in, "in", "", "Path a la imagen de entrada (opcional, si no hay se crea una imagen vacia)")
 	imageCmd.Flags().StringVar(&out, "out", "honeytoken_image.html", "Path al archivo HTML de salida")
 	imageCmd.MarkFlagRequired("msg")
+	imageCmd.MarkFlagRequired("chat")
 	rootCmd.AddCommand(imageCmd)
 }
 

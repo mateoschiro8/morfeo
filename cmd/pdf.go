@@ -24,6 +24,8 @@ var pdfCmd = &cobra.Command{
 }
 
 func init() {
+	pdfCmd.Flags().StringVar(&msg, "mensaje", "", "Mensaje que debe mostrar el servidor Canary")
+	pdfCmd.Flags().StringVar(&chat, "chat", "", "Chat ID al cual enviar mensaje al activarse")
 	pdfCmd.Flags().StringVar(&in, "in", "", "Ruta al archivo de entrada")
 	pdfCmd.Flags().StringVar(&out, "out", "", "Ruta al archivo de salida")
 	pdfCmd.MarkFlagRequired("in")

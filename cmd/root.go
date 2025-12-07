@@ -38,26 +38,36 @@ func CreateToken(msg string, redirect string) string {
 
 	data := types.UserInput{
 		Msg:      msg,
-		Redirect: redirect,
+		Extra: extra,
+		Chat: chat,
 	}
-
+	
 	body, err := json.Marshal(data)
-	if err != nil {
-		panic(err)
-	}
-
-	resp, err := http.Post(serverURL+"/tokens", "application/json", bytes.NewBuffer(body))
-	if err != nil {
-		panic(err)
-	}
+	resp, err := http.Post(serverURL+"/tokens",
+                         "application/json",
+                         bytes.NewBuffer(body))
 	defer resp.Body.Close()
 
 	respBytes, err := io.ReadAll(resp.Body)
-	if err != nil {
-		panic(err)
-	}
+	tokenID := string(respBytes)
+	return tokenID
+	// body, err := json.Marshal(data)
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	respString := string(respBytes)
-	fmt.Println(respString)
-	return respString
+	// resp, err := http.Post(serverURL+"/tokens", "application/json", bytes.NewBuffer(body))
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// defer resp.Body.Close()
+
+	// respBytes, err := io.ReadAll(resp.Body)
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// respString := string(respBytes)
+	// fmt.Println(respString)
+	// return respString
 }

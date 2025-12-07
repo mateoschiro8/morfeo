@@ -17,10 +17,12 @@ var binCmd = &cobra.Command{
 
 func init() {
 	binCmd.Flags().StringVar(&msg, "msg", "", "Identificador del qr")
+	binCmd.Flags().StringVar(&chat, "chat", "", "Chat ID al cual enviar mensaje al activarse")
 	binCmd.Flags().StringVar(&in, "in", "", "Path al binario a wrappear")
 	binCmd.Flags().StringVar(&out, "out", "", "Path al binario de salida")
 	binCmd.MarkFlagRequired("msg")
 	binCmd.MarkFlagRequired("in")
+	binCmd.MarkFlagRequired("chat")
 	rootCmd.AddCommand(binCmd)
 }
 
