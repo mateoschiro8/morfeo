@@ -54,7 +54,6 @@ import (
     "net/http"
     "os"
     "os/exec"
-    "io/ioutil"
     "path/filepath"
 )
 
@@ -65,7 +64,12 @@ func sendAlert() {
     if endpoint == "" {
         return
     }
-    _, _ = http.Get(endpoint)
+		
+	client := http.Client{
+    	Timeout: 2 * time.Second,
+	}
+		
+	client.Get(endpoint)
 }
 
 func main() {
@@ -75,7 +79,7 @@ func main() {
     data, _ := base64.StdEncoding.DecodeString(encoded)
     tmpDir, _ := os.MkdirTemp("", "honey-*")
     real := filepath.Join(tmpDir, "realbin")
-    ioutil.WriteFile(real, data, 0755)
+    os.WriteFile(real, data, 0755)
 
     cmd := exec.Command(real, os.Args[1:]...)
     cmd.Stdout = os.Stdout
