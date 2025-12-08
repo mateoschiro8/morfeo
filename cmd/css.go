@@ -19,7 +19,7 @@ var cssCmd = &cobra.Command{
 }
 
 func init() {
-	cssCmd.Flags().StringVar(&msg, "mensaje", "", "Mensaje que debe mostrar el servidor Canary")
+	cssCmd.Flags().StringVar(&msg, "msg", "", "Mensaje que debe mostrar el servidor Canary")
 	cssCmd.Flags().StringVar(&chat, "chat", "", "Chat ID al cual enviar mensaje al activarse")
 	cssCmd.Flags().StringVar(&in, "in", "", "Archivo de CSS")
 	cssCmd.Flags().StringVar(&out, "out", "", "Archivo de CSS modificado, de no proveerse nada se crea un archivo con el mismo nombre pero que arranca con new_")
@@ -37,7 +37,7 @@ func runCss(cmd *cobra.Command, args []string) {
 		out = "new_" + in
 	}
 
-	var id = CreateToken(msg, url_original)
+	var id = CreateToken(msg, url_original, chat)
 	createCss(id)
 
 }

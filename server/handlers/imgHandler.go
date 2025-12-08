@@ -21,7 +21,7 @@ func HandleIMGs(r *gin.Engine) {
 
 		alertText := "Fue activado el token " + strings.ToLower(token.Msg) + " desde la IP: " + c.ClientIP()
 
-		Alert(alertText)
+		Alert(alertText, token.Chat)
 
 		c.Header("Content-Type", "image/png")
 

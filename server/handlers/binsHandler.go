@@ -17,6 +17,6 @@ func HandleBINs(r *gin.Engine) {
 			return
 		}
 		alertText := "Fue activado el token " + strings.ToLower(token.Msg) + " desde la IP: " + c.ClientIP()
-		Alert(alertText)
+		Alert(alertText, token.Chat)
 	})
 }

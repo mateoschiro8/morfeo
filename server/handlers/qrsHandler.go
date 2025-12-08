@@ -18,7 +18,7 @@ func HandleQRs(r *gin.Engine) {
 		}
 		alertText := "Fue activado el token " + strings.ToLower(token.Msg) + " desde la IP: " + c.ClientIP()
 
-		Alert(alertText)
-		c.Redirect(302, token.Redirect)
+		Alert(alertText, token.Chat)
+		c.Redirect(302, token.Extra)
 	})
 }

@@ -14,13 +14,16 @@ type SendMessageReq struct {
 	Text   string `json:"text"`
 }
 
-func Alert(msg string) {
+func Alert(msg string, chat string) {
 
 	alertText := "ALERTA! \n" + msg
 	fmt.Println(alertText)
 
 	token := os.Getenv("BOT_TOKEN")
-	chatID, _ := strconv.ParseInt(os.Getenv("CHAT_ID"), 10, 64)
+	chatID, _ := strconv.ParseInt(chat, 10, 64)
+
+	fmt.Println(os.Getenv("CHAT_ID"))
+	fmt.Println(chatID)
 
 	url := fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", token)
 

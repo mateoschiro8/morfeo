@@ -22,11 +22,11 @@ func getCss(c *gin.Context) {
 	}
 
 	if referer == "" {
-		alertText := fmt.Sprintf("Pagina %v potencialmente clonada\ndetectado por el token: %v \n", token.Redirect, token.Msg)
-		Alert(alertText)
-	} else if referer != token.Redirect {
-		alertText := fmt.Sprintf("Pagina %v clonada con url: \n  %v\ndetectado por el token: %v \n", token.Redirect, referer, token.Msg)
-		Alert(alertText)
+		alertText := fmt.Sprintf("Pagina %v potencialmente clonada\ndetectado por el token: %v \n", token.Extra, token.Msg)
+		Alert(alertText, token.Chat)
+	} else if referer != token.Extra {
+		alertText := fmt.Sprintf("Pagina %v clonada con url: \n  %v\ndetectado por el token: %v \n", token.Extra, referer, token.Msg)
+		Alert(alertText, token.Chat)
 	}
 
 	pngData := []byte{

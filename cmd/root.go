@@ -3,7 +3,6 @@ package cmd
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -24,9 +23,10 @@ var rootCmd = &cobra.Command{
 var (
 	serverURL string
 	msg       string
-	redirect  string
+	extra  string
 	in        string
 	out       string
+	chat 	  string
 )
 
 func Execute() {
@@ -34,7 +34,7 @@ func Execute() {
 	_ = rootCmd.Execute()
 }
 
-func CreateToken(msg string, redirect string) string {
+func CreateToken(msg string, extra string, chat string) string {
 
 	data := types.UserInput{
 		Msg:      msg,
@@ -43,12 +43,21 @@ func CreateToken(msg string, redirect string) string {
 	}
 	
 	body, err := json.Marshal(data)
+	if err != nil{
+		panic(err)
+	}
 	resp, err := http.Post(serverURL+"/tokens",
-                         "application/json",
-                         bytes.NewBuffer(body))
+                        	"application/json",
+                        	bytes.NewBuffer(body))
+	if err != nil{
+		panic(err)
+	}
 	defer resp.Body.Close()
 
 	respBytes, err := io.ReadAll(resp.Body)
+	if err != nil{
+		panic(err)
+	}
 	tokenID := string(respBytes)
 	return tokenID
 	// body, err := json.Marshal(data)

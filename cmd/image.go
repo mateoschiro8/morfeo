@@ -30,7 +30,7 @@ func init() {
 
 func generateImageToken(cmd *cobra.Command, args []string) {
 
-	tokenID := CreateToken(msg, "")
+	tokenID := CreateToken(msg, "", chat)
 
 	imageURL := serverURL + "/track?id=" + tokenID
 
