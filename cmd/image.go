@@ -11,7 +11,7 @@ import (
 
 var imageCmd = &cobra.Command{
 	Use:   "image",
-	Short: "Genera un honeytoken de imagen desde una imagen existente o crea una nueva",
+	Short: "Genera un honeytoken de imagen",
 	Run:   generateImageToken,
 }
 

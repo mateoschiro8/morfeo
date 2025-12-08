@@ -3,11 +3,9 @@ package cmd
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/joho/godotenv"
 	"github.com/mateoschiro8/morfeo/server/types"
@@ -27,38 +25,18 @@ var (
 
 var rootCmd = &cobra.Command{
 	Use: "morfeo",
-	PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		godotenv.Load()
 		serverURL = os.Getenv("SERVERURL")
-
-		if cmd.Name() == "server" {
-			return nil
-		}
-
-		msg, _ = cmd.Flags().GetString("msg")
-		chat, _ = cmd.Flags().GetString("chat")
-
-		var missingFlags []string
-
-		if msg == "" {
-			missingFlags = append(missingFlags, "msg")
-		}
-
-		if chat == "" {
-			missingFlags = append(missingFlags, "chat")
-		}
-
-		if len(missingFlags) == 0 {
-			return nil
-		}
-
-		return fmt.Errorf("required flag(s) missing: --%s", strings.Join(missingFlags, ", --"))
 	},
 }
 
 func init() {
 	rootCmd.PersistentFlags().String("msg", "", "Identificador del token")
 	rootCmd.PersistentFlags().String("chat", "", "Chat ID al cual enviar la alerta al ser activado")
+
+	_ = rootCmd.MarkPersistentFlagRequired("msg")
+	_ = rootCmd.MarkPersistentFlagRequired("chat")
 }
 
 func Execute() {

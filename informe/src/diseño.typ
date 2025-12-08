@@ -39,6 +39,8 @@ Notar que en el paso 2, al comunicarse con el server, no se indica qué tipo de 
 
 Cuando un token es activado, la solicitud *GET* es mandada a una URL con la forma #hl[`/{tokenType}/{tokenID}`]. La distinción del tipo de token en la URL permite que el handler ejecute los pasos adicionales (además de la alerta) de los tokens que así lo requieran (por ejemplo, la redirección en el código QR).
 
+#pagebreak()
+
 = Implementación 
 
 == CLI

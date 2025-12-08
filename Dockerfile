@@ -19,6 +19,4 @@ EXPOSE 8000
 
 ENV GIN_MODE=release
 
-ENTRYPOINT ["./morfeo"]
-
-CMD ["server"]
+ENTRYPOINT ["./morfeo", "server", "--msg", "unMensaje", "--chat", "unChat"]

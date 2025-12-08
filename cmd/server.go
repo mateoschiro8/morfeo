@@ -6,7 +6,8 @@ import (
 )
 
 var serverCmd = &cobra.Command{
-	Use: "server",
+	Use:    "server",
+	Hidden: true,
 	Run: func(cmd *cobra.Command, args []string) {
 		server.StartServer()
 	},
