@@ -57,7 +57,7 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.PersistentFlags().String("msg", "", "Identificador del qr")
+	rootCmd.PersistentFlags().String("msg", "", "Identificador del token")
 	rootCmd.PersistentFlags().String("chat", "", "Chat ID al cual enviar la alerta al ser activado")
 }
 

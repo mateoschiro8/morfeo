@@ -1,8 +1,14 @@
 services:
   app:
+    image: morfeo-app
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: morfeo-app
+
+    ports:
+      - "8000:8000"
+
     environment:
       SERVERURL: ${SERVERURL}
       MONGOUSER: ${MONGOUSER}
@@ -11,8 +17,9 @@ services:
       MONGOAPP: ${MONGOAPP}
       BOT_TOKEN: ${BOT_TOKEN}
       CHAT_ID: ${CHAT_ID}
-      GIN_MODE: "release"
-    container_name: golang-gin-app
-    ports:
-      - "8000:8000"  
+      GIN_MODE: release
+
+    volumes:
+      - ./tmp:/tmp
+
     restart: no

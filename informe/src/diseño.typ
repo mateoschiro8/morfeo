@@ -78,7 +78,81 @@ Esta arquitectura permite que agregar un nuevo formato de honeytoken sea tan sim
 #lorem(10)
 
 === Binario
-#lorem(10)
+
+La idea para crear un honeytoken a partir de un binario compilado es crear un nuevo binario que actúe de _wrapper_ del binario original. Es decir, que el binario resultante realice la alerta al servidor, y luego simule el comportamiento del binario original.
+
+La función de creación de estos tokens tiene la siguiente forma:
+
+```go
+func generateBinaryWrapper(cmd *cobra.Command, args []string) {
+
+	tokenID := CreateToken(msg, "", chat)
+
+	data, err := os.ReadFile(in)
+	b64 := base64.StdEncoding.EncodeToString(data)
+
+	code := strings.ReplaceAll(wrapperTemplate, "{{B64}}", b64)
+	code = strings.ReplaceAll(code, "{{Endpoint}}", 
+														serverURL+"/bins/"+tokenID)
+
+	os.WriteFile("tmp.go", []byte(code), 0644)
+
+	outCmd := exec.Command("go", "build", "-o", out, "tmp.go")
+	outCmd.Stdout = os.Stdout
+	outCmd.Stderr = os.Stderr
+	outCmd.Run()
+
+	os.Remove("tmp.go")
+}
+```
+
+Primero, llama a la función de creación de tokens mencionada anteriormente, y consigue el tokenID del nuevo token. 
+
+Luego, lee el binario compilado que fue pasado como flag, y lo codifica en base64. Luego, toma el contenido de #hl[`wrapperTemplate`] y le "inyecta" el binario codificado y la URL a la que debe dar aviso.
+
+Finalmente, crea un archivo llamado #hl[`tmp.go`] con los contenidos de dicho template (_wrapper_ + binario original), crea un comando que lo compila, lo ejecuta, y remueve el archivo fuente. Este binario compilado (llamado #hl[`tmp`] a menos que se utilice la flag _out_) es el honeytoken final.
+
+El template que se compila para crear el binario final tiene la siguiente forma:
+
+```go
+const encoded = "{{B64}}"
+const endpoint = "{{Endpoint}}"
+
+func sendAlert() {
+	client := http.Client{
+    	Timeout: 2 * time.Second,
+	}
+	client.Get(endpoint)
+}
+
+func main() {
+    
+	sendAlert()
+
+	data, _ := base64.StdEncoding.DecodeString(encoded)
+	tmpDir, _ := os.MkdirTemp("", "honey-*")
+	real := filepath.Join(tmpDir, "realbin")
+	os.WriteFile(real, data, 0755)
+
+	cmd := exec.Command(real, os.Args[1:]...)
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	cmd.Stdin  = os.Stdin
+
+	err := cmd.Run()
+	if err != nil {
+			if e, ok := err.(*exec.ExitError); ok {
+					os.Exit(e.ExitCode())
+			}
+			panic(err)
+	}
+}
+```
+Lo primero que hace al ser ejecutado es mandar la alerta al servidor, a la URL inyectada por el generador. Con el objetivo de pasar más desapercibido, tiene un timeout de 2 segundos (por si el servidor no contesta). 
+
+Luego, decodifica el binario original compilado, crea un directorio temporal en #hl[`/tmp`] con un sufijo aleatorio, y crea un archivo ahí dentro con los datos del binario. 
+
+Finalmente, crea un comando de ejecución del archivo recién creado, le pasa los mismos _file descriptors_ de entrada, salida y error, y lo ejecuta. Además, en caso de que el binario original finalice con algún código de error, el binario wrapper finaliza de la misma forma.
 
 === PDF 
 #lorem(10)
@@ -139,7 +213,7 @@ En ella, primero se define un *router*, donde se van a definir los endpoints del
 
 El *GET* a #hl[`/`] devuelve *`morfeoString`*, que no es más que un simple HTML que muestra el nombre del sistema. Debido a que la plataforma que fue utilizada para hacer el deploy "duerme" a las aplicaciones que no son utilizadas por un tiempo, este endpoint es utilizado para "despertar" a la aplicación.
 
-Se construye luego la URL de conexión a la base de datos usando variables de ambiente, y se realiza la conexión. Se obtiene la colección de los tokens, y para facilitar el uso de la misma se crea un #hl[`tokenController`], que es guardado en el contexto para que esté disponible en todos los handlers.
+Se construye luego la URL de conexión a la base de datos usando variables de ambiente (omitida por espacio), y se realiza la conexión. Se obtiene la colección de los tokens, y para facilitar el uso de la misma se crea un #hl[`tokenController`], que es guardado en el contexto para que esté disponible en todos los handlers.
 
 Luego, se agrega en el *POST* a #hl[`/tokens`] la función de registro de los mismos, #hl[`handleNewToken`]. Esta función simplemente recupera los datos recibidos en el cuerpo del pedido, introduce un nuevo documento con los mismos en la base de datos y envía en la respuesta el #hl[`tokenID`] generado. 
 
