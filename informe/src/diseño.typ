@@ -158,7 +158,44 @@ Finalmente, crea un comando de ejecución del archivo recién creado, le pasa lo
 #lorem(10)
 
 === IMG 
-#lorem(10)
+
+En primer lugar, el comando acepta los siguientes flags:
+
+-- `msg` (obligatorio): Identificador único del honeytoken
+
+-- `chat` (obligatorio): ID del chat de Telegram donde se recibirá la alerta al activarse
+
+-- `in` (opcional): Path a una imagen existente que se desee utilizar para generar el honeytoken
+
+-- `out` (opcional): Ruta del archivo HTML de salida (por defecto: honeytoken_image.html)
+
+Cuando se pasa el parametro *`--in`*, el programa:
+
+ + Se fija si existe la imagen
+
++ Extrae las dimensiones de la imagen usando `image.DecodeConfig()`
+
++ Genera un archivo HTML que contiene:
+
+  - La imagen original visible
+
+  - Un pixel invisible de 1x1 que apunta a la URL indicada
+
+Ademas, se genera un archivo SVG con estructura similar:
+
+  - Elemento `<image>` principal con la imagen original
+  
+  - Elemento `<image>` de 1x1
+  
+  - ViewBox configurado según las dimensiones originales
+
+Si no se proporciona imagen de entrada, el sistema crea:
+
+  - HTML con únicamente un pixel invisible sobre un fondo blanco
+  
+  - SVG de 1x1 píxel conteniendo solo el honeytoken
+
+Ambos formatos utilizan la técnica de _tracking pixel_: cuando se abre con algun editor de imagenes (no todos) el HTML o SVG, automáticamente realiza una petición HTTP GET a la URL embebida en la imagen
 
 === CSS
 #lorem(10)
