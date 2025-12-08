@@ -20,7 +20,7 @@ Para poder usar la herramienta, es necesario clonar el repositorio y tener #link
 Esto generará un ejecutable llamado #hl[`morfeo`]. Luego, al ejecutar
 #codeblock[`$ ./morfeo`]
 desde donde se encuentre, se podrá ver la salida:
-#codeblock[#set text(size: 12pt)
+#codeblock[#set text(size: 10pt)
 ```  
 Usage:
   morfeo [command]
@@ -42,8 +42,19 @@ Use "morfeo [command] --help" for more information about a command
 ```
 ]
 
+Para poder recibir las alertas, es necesario activar el bot que las manda. Para hacer esto, se entra al #link("https://t.me/morfeoSeguroBot ")[#hl[#underline[chat]]] con el mismo, y se le da #hl[`start`]. 
+
 Luego, simplemente se ejecuta #hl[`./morfeo [command] [flags]`]. En caso de necesitar más información sobre un comando, ejecutarlo sin flags o con la flag #hl[`--help`] imprime más detalles sobre el mismo. 
 
 Algunos comandos tienen flags que otros no tienen, pero hay dos flags que todos los comandos comparten:
 + #hl[`--msg`]: Un mensaje para identificar al token que está siendo creado, que será mandado en el mensaje de alerta cuando el mismo sea activado.
-+ #hl[`--chat`]: El *ID* del chat de Telegram al que será mandada la alerta cuando el token que está siendo creado sea activado. Para encontrarlo, se le puede escribir a #link("https://t.me/RawDataBot")[#hl[este bot]].
++ #hl[`--chat`]: El *ID* del chat de Telegram al que será mandada la alerta cuando el token que está siendo creado sea activado. Para encontrarlo, se le puede escribir a #link("https://t.me/RawDataBot")[#hl[#underline[este bot]]].
+
+*Ejemplo de uso:*
+
+Para crear un código QR que actúe como honeytoken:
+#codeblock[`$ ./morfeo qr --msg "de ejemplo" --chat {chatID}`]
+
+Esto genera un QR que al ser escaneado produce la siguiente alerta mediante Telegram:
+
+#align(center, image("img/ejemplo.jpeg", width: 60%))

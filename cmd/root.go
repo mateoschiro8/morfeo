@@ -32,8 +32,8 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.PersistentFlags().String("msg", "", "Identificador del token")
-	rootCmd.PersistentFlags().String("chat", "", "Chat ID al cual enviar la alerta al ser activado")
+	rootCmd.PersistentFlags().StringVar(&msg, "msg", "", "Identificador del token")
+	rootCmd.PersistentFlags().StringVar(&chat, "chat", "", "Chat ID al cual enviar la alerta al ser activado")
 
 	_ = rootCmd.MarkPersistentFlagRequired("msg")
 	_ = rootCmd.MarkPersistentFlagRequired("chat")
