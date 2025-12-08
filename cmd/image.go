@@ -16,12 +16,8 @@ var imageCmd = &cobra.Command{
 }
 
 func init() {
-	imageCmd.Flags().StringVar(&msg, "msg", "", "Identificador del honeytoken")
-	imageCmd.Flags().StringVar(&chat, "chat", "", "Chat ID al cual enviar mensaje al activarse")
 	imageCmd.Flags().StringVar(&in, "in", "", "Path a la imagen de entrada (opcional, si no hay se crea una imagen vacia)")
 	imageCmd.Flags().StringVar(&out, "out", "honeytoken_image.html", "Path al archivo HTML de salida")
-	imageCmd.MarkFlagRequired("msg")
-	imageCmd.MarkFlagRequired("chat")
 	rootCmd.AddCommand(imageCmd)
 }
 
@@ -39,8 +35,6 @@ func generateImageToken(cmd *cobra.Command, args []string) {
 	var svgContent string
 
 	if in != "" {
-		fmt.Printf("Generando honeytoken desde imagen: %s\n", in)
-
 		if _, err := os.Stat(in); err != nil {
 			panic(fmt.Errorf("error: la imagen de entrada no existe: %w", err))
 		}
@@ -82,8 +76,10 @@ img { display: block; width: 100%%; height: 100vh; object-fit: contain; }
   <image href="%s" width="%d" height="%d"/>
   <image href="%s" width="1" height="1" opacity="0"/>
 </svg>`, width, height, filepath.Base(in), width, height, imageURL)
+
 	} else {
 		// si no hay imagen creo html vacio
+
 		htmlContent = fmt.Sprintf(`<!DOCTYPE html>
 <html>
 <head>
@@ -116,8 +112,5 @@ body { background: #fff; }
 	err = os.WriteFile(svgPath, []byte(svgContent), 0644)
 	if err != nil {
 		panic(fmt.Errorf("error creando archivo SVG: %w", err))
-	}
-	if in != "" {
-		fmt.Printf("Imagen original referenciada: %s\n", filepath.Base(in))
 	}
 }

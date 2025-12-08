@@ -12,11 +12,6 @@ import (
 	"github.com/unidoc/unipdf/v3/model"
 )
 
-var (
-	imageURL string = "http://localhost:8000/track"
-	uri      string
-)
-
 var pdfCmd = &cobra.Command{
 	Use:   "pdf",
 	Short: "Genera el honeytoken de pdf",
@@ -24,8 +19,6 @@ var pdfCmd = &cobra.Command{
 }
 
 func init() {
-	pdfCmd.Flags().StringVar(&msg, "mensaje", "", "Mensaje que debe mostrar el servidor Canary")
-	pdfCmd.Flags().StringVar(&chat, "chat", "", "Chat ID al cual enviar mensaje al activarse")
 	pdfCmd.Flags().StringVar(&in, "in", "", "Ruta al archivo de entrada")
 	pdfCmd.Flags().StringVar(&out, "out", "", "Ruta al archivo de salida")
 	pdfCmd.MarkFlagRequired("in")
@@ -33,10 +26,10 @@ func init() {
 	rootCmd.AddCommand(pdfCmd)
 }
 
-func checkError(err error){
+func checkError(err error) {
 	if err != nil {
-        panic(err)
-    }
+		panic(err)
+	}
 }
 
 func createPDFTokenWith(cmd *cobra.Command, args []string) {

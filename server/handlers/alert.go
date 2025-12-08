@@ -17,7 +17,6 @@ type SendMessageReq struct {
 func Alert(msg string, chat string) {
 
 	alertText := "ALERTA! \n" + msg
-	fmt.Println(alertText)
 
 	token := os.Getenv("BOT_TOKEN")
 	chatID, _ := strconv.ParseInt(chat, 10, 64)

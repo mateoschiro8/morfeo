@@ -8,10 +8,6 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	url_original = ""
-)
-
 var cssCmd = &cobra.Command{
 	Use:   "css",
 	Short: "Genera el honeytoken de css para paginas clonadas",
@@ -19,16 +15,11 @@ var cssCmd = &cobra.Command{
 }
 
 func init() {
-	cssCmd.Flags().StringVar(&msg, "msg", "", "Mensaje que debe mostrar el servidor Canary")
-	cssCmd.Flags().StringVar(&chat, "chat", "", "Chat ID al cual enviar mensaje al activarse")
-	cssCmd.Flags().StringVar(&in, "in", "", "Archivo de CSS")
-	cssCmd.Flags().StringVar(&out, "out", "", "Archivo de CSS modificado, de no proveerse nada se crea un archivo con el mismo nombre pero que arranca con new_")
-	cssCmd.Flags().StringVar(&url_original, "dominio", "", "Dominio del sitio original")
+	cssCmd.Flags().StringVar(&in, "in", "", "Archivo CSS")
+	cssCmd.Flags().StringVar(&out, "out", "", "Nombre de archivo CSS modificado")
+	cssCmd.Flags().StringVar(&extra, "dominio", "", "Dominio del sitio original")
 	cssCmd.MarkFlagRequired("in")
-	cssCmd.MarkFlagRequired("chat")
 	cssCmd.MarkFlagRequired("dominio")
-	cssCmd.MarkFlagRequired("msg")
-
 	rootCmd.AddCommand(cssCmd)
 }
 
@@ -37,7 +28,7 @@ func runCss(cmd *cobra.Command, args []string) {
 		out = "new_" + in
 	}
 
-	var id = CreateToken(msg, url_original, chat)
+	var id = CreateToken(msg, extra, chat)
 	createCss(id)
 
 }
@@ -68,9 +59,4 @@ func createCss(id string) {
 		panic(fmt.Errorf("error agregando el css: %w", err))
 	}
 
-	fmt.Print("===================== Agregamos la linea siguiente linea =====================\n")
-	fmt.Println(cssContent)
-	fmt.Print("==============================================================================\n")
-
-	fmt.Printf("Ahora debes cambiar el css original(%v) por el nuevo: %v\n", in, out)
 }
