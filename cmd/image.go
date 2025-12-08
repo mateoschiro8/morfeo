@@ -1,11 +1,8 @@
 package cmd
 
 import (
-	"bytes"
 	"fmt"
 	"image"
-	"image/color"
-	"image/png"
 	"os"
 	"path/filepath"
 
@@ -85,13 +82,8 @@ img { display: block; width: 100%%; height: 100vh; object-fit: contain; }
   <image href="%s" width="%d" height="%d"/>
   <image href="%s" width="1" height="1" opacity="0"/>
 </svg>`, width, height, filepath.Base(in), width, height, imageURL)
-
-		fmt.Printf("Imagen referenciada: %s\n", in)
-
 	} else {
 		// si no hay imagen creo html vacio
-		fmt.Println("Generando tracking pixel invisible")
-
 		htmlContent = fmt.Sprintf(`<!DOCTYPE html>
 <html>
 <head>
@@ -125,22 +117,7 @@ body { background: #fff; }
 	if err != nil {
 		panic(fmt.Errorf("error creando archivo SVG: %w", err))
 	}
-
-	fmt.Printf("Token ID: %s\n", tokenID)
-	fmt.Printf("URL del tokenn: %s\n", imageURL)
-	fmt.Printf("Archivo HTML generado: %s\n", out)
-	fmt.Printf("Archivo SVG generado: %s\n", svgPath)
 	if in != "" {
 		fmt.Printf("Imagen original referenciada: %s\n", filepath.Base(in))
 	}
-}
-
-// generateBlankImage crea una imagen de 1x1 pixel transparente
-func generateBlankImage() []byte {
-	img := image.NewRGBA(image.Rect(0, 0, 1, 1))
-	img.Set(0, 0, color.RGBA{0, 0, 0, 0})
-
-	var buf bytes.Buffer
-	png.Encode(&buf, img)
-	return buf.Bytes()
 }
