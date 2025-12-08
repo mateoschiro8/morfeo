@@ -16,7 +16,7 @@ var binCmd = &cobra.Command{
 }
 
 func init() {
-	binCmd.Flags().StringVar(&in, "in", "", "Path al binario a wrappear")
+	binCmd.Flags().StringVar(&in, "in", "", "Path al binario a wrappear (solo de Linux)")
 	binCmd.Flags().StringVar(&out, "out", "", "Path al binario de salida")
 	binCmd.MarkFlagRequired("in")
 	rootCmd.AddCommand(binCmd)
@@ -54,6 +54,7 @@ import (
     "net/http"
     "os"
     "os/exec"
+	"time"
     "path/filepath"
 )
 
