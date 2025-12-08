@@ -76,10 +76,8 @@ img { display: block; width: 100%%; height: 100vh; object-fit: contain; }
   <image href="%s" width="%d" height="%d"/>
   <image href="%s" width="1" height="1" opacity="0"/>
 </svg>`, width, height, filepath.Base(in), width, height, imageURL)
-
 	} else {
 		// si no hay imagen creo html vacio
-
 		htmlContent = fmt.Sprintf(`<!DOCTYPE html>
 <html>
 <head>
