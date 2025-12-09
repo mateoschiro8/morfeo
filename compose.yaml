@@ -5,6 +5,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: morfeo-server
+    command: ["./morfeo", "server", "--msg", "unMensaje", "--chat", "unChat"]
 
     ports:
       - "8000:8000"
@@ -41,6 +42,9 @@ services:
       MONGOAPP: ${MONGOAPP}
       BOT_TOKEN: ${BOT_TOKEN}
       GIN_MODE: release
+
+    ports:
+      - "8001:8000"
 
     volumes:
       - ./tmp:/tmp
