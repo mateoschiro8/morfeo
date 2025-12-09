@@ -26,4 +26,25 @@ a donde redirigir, etc etc
     - Que los tokens guarden el CHATID del usuario a quién avisar en en telegram
     - Rehacer los tokens con la nueva base, y pasar a que usen el GetToken como el de qrs/bins. Tokens restantes: pdf, img, css. Proximos: 
     - Acomodar las variables globales del cmd (se pueden reutilizar)
-   
+
+
+# CAMBIOS
+
+Instrucciones de Uso
+
+Levantar el server:
+
+    docker compose up morfeo-server
+
+Levantar la cli:
+
+    docker compose run morfeo-cli
+
+
+Para correrlo de forma Local hay que:
+
+    1- en .env cambiar la url a "http://localhost:8000"
+
+    2- en compose.yaml en el servicio de morfeo-cli hay que hardocdear "http://morfeo-server:8000"
+
+    3- en el honey token que te devuelve la cli hay que volver a poner localhost en donde dice morfeo-server

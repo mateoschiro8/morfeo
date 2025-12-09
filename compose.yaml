@@ -3,7 +3,7 @@ services:
     image: morfeo-app
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfilea
     container_name: morfeo-server
     command: ["./morfeo", "server", "--msg", "unMensaje", "--chat", "unChat"]
 
@@ -44,7 +44,7 @@ services:
       GIN_MODE: release
 
     ports:
-      - "8001:8000"
+      - "8000:8000"
 
     volumes:
       - ./tmp:/tmp
