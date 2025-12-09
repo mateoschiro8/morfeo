@@ -1,10 +1,10 @@
 services:
-  app:
+  morfeo-server:
     image: morfeo-app
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: morfeo-app
+    container_name: morfeo-server
 
     ports:
       - "8000:8000"
@@ -16,10 +16,33 @@ services:
       MONGOCLUSTER: ${MONGOCLUSTER}
       MONGOAPP: ${MONGOAPP}
       BOT_TOKEN: ${BOT_TOKEN}
-      CHAT_ID: ${CHAT_ID}
       GIN_MODE: release
 
     volumes:
       - ./tmp:/tmp
 
     restart: no
+  morfeo-cli:
+    image: morfeo-app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: morfeo-cli-tool
+    stdin_open: true  
+    tty: true
+    entrypoint: /bin/sh
+    command: 
+
+    environment:
+      SERVERURL: ${SERVERURL}
+      MONGOUSER: ${MONGOUSER}
+      MONGOPW: ${MONGOPW}
+      MONGOCLUSTER: ${MONGOCLUSTER}
+      MONGOAPP: ${MONGOAPP}
+      BOT_TOKEN: ${BOT_TOKEN}
+      GIN_MODE: release
+
+    volumes:
+      - ./tmp:/tmp
+      - ./tokens:/app/output
+    restart: "no"

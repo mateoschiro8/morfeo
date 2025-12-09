@@ -8,3 +8,5 @@ pag-ejemplo/*
 *.css
 demo/
 demo/*
+tokens
+tmp

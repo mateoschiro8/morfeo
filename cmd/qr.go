@@ -37,7 +37,7 @@ func generateQRCode(cmd *cobra.Command, args []string) {
 		panic(fmt.Errorf("failed to scale QR code: %w", err))
 	}
 
-	file, err := os.Create("qrcode.png")
+	file, err := os.Create("output/qrcode.png")
 	if err != nil {
 		panic(fmt.Errorf("failed to create file: %w", err))
 	}
