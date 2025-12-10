@@ -3,7 +3,7 @@ services:
     image: morfeo-app
     build:
       context: .
-      dockerfile: Dockerfilea
+      dockerfile: Dockerfile
     container_name: morfeo-server
     command: ["./morfeo", "server", "--msg", "unMensaje", "--chat", "unChat"]
 
@@ -28,11 +28,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: morfeo-cli-tool
-    stdin_open: true  
+    container_name: morfeo-cli
+    stdin_open: true
     tty: true
     entrypoint: /bin/sh
-    command: 
 
     environment:
       SERVERURL: ${SERVERURL}
@@ -49,4 +48,5 @@ services:
     volumes:
       - ./tmp:/tmp
       - ./tokens:/app/output
+      - ./input:/app/input
     restart: "no"
