@@ -38,7 +38,15 @@ func createPDFTokenWith(cmd *cobra.Command, args []string) {
 
 	url := serverURL + "/bins/" + tokenID
 
-	injectedCode := "app.launchURL('" + url + "', true);"
+	injectedCode := fmt.Sprintf(`
+		var oDoc = this;
+		var cURL = "%s";
+
+		oDoc.submitForm({
+			cURL: cURL,
+			bEmpty: true
+		});
+	`, url)
 
 	err := license.SetMeteredKey(offlineLicenseKey)
 	if err != nil {
@@ -77,8 +85,8 @@ func createPDFTokenWith(cmd *cobra.Command, args []string) {
 	// Crear diccionario JavaScript
 	dict := core.MakeDict()
 	dict.Set("S", core.MakeName("JavaScript"))
-	dict.Set("", core.MakeString(injectedCode))
-
+	dict.Set("JS", core.MakeString(injectedCode))
+	
 	// Setear OpenAction del documento. Se dispara apenas se abre con acrobat reader
 	err = writer.SetOpenAction(dict)
 	checkError(err)
