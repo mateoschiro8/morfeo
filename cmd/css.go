@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -22,7 +23,7 @@ func init() {
 	cssCmd.Flags().StringVar(&msg, "msg", "", "Mensaje que debe mostrar el servidor Canary")
 	cssCmd.Flags().StringVar(&chat, "chat", "", "Chat ID al cual enviar mensaje al activarse")
 	cssCmd.Flags().StringVar(&in, "in", "", "Archivo de CSS")
-	cssCmd.Flags().StringVar(&out, "out", "", "Archivo de CSS modificado, de no proveerse nada se crea un archivo con el mismo nombre pero que arranca con new_")
+	cssCmd.Flags().StringVar(&out, "out", "", "Archivo de CSS modificado, de no proveerse nada se crea con el mismo nombre")
 	cssCmd.Flags().StringVar(&dominio, "dominio", "", "Dominio del sitio original")
 	cssCmd.MarkFlagRequired("in")
 	cssCmd.MarkFlagRequired("dominio")
@@ -30,13 +31,29 @@ func init() {
 }
 
 func runCss(cmd *cobra.Command, args []string) {
-	if out == "" {
-		out = "new_" + in
-	}
+	
+	formatIn()
+
+	formatOut()
 
 	var id = CreateToken(msg, dominio, chat)
 	createCss(id)
 
+}
+
+func formatOut() {
+	if out == "" {
+		var directories = strings.Split(in, "/")
+		out = directories[len(directories)-1]
+	}
+
+	out = "output/" + out
+}
+
+func formatIn() {
+	if strings.Split(in, "/")[0] != "input" {
+		in = "input/" + in
+	}
 }
 
 func createCss(id string) {
