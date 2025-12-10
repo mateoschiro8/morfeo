@@ -36,17 +36,14 @@ func createPDFTokenWith(cmd *cobra.Command, args []string) {
 
 	tokenID := CreateToken(msg, "", chat)
 
-	url := serverURL + "/bins/" + tokenID
+	url := serverURL + "/track?id=" + tokenID
 
+	fmt.Print(url+"\n")
 	injectedCode := fmt.Sprintf(`
-		var oDoc = this;
-		var cURL = "%s";
-
-		oDoc.submitForm({
-			cURL: cURL,
-			bEmpty: true
-		});
-	`, url)
+        var cURL = "%s";
+        // El segundo parámetro 'true' abre una ventana nueva
+        app.launchURL(cURL, true); 
+    `, url)
 
 	err := license.SetMeteredKey(offlineLicenseKey)
 	if err != nil {
@@ -91,11 +88,13 @@ func createPDFTokenWith(cmd *cobra.Command, args []string) {
 	err = writer.SetOpenAction(dict)
 	checkError(err)
 
-	out, err := os.Create(out)
+	fOut, err := os.Create(out)
 	checkError(err)
-	defer out.Close()
+	defer fOut.Close()
 
-	writer.Write(out)
+	fmt.Printf("\"a\": %v\n", "a")
+
+	writer.Write(fOut)
 }
 
 const offlineLicenseKey = `1b6e2b4d1bf6137cd0b6f7b7b00ebb54196700b748c51cc460bbfaca74a5de74`
