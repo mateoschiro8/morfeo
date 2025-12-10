@@ -15,8 +15,11 @@ WORKDIR /app
 RUN apk add --no-cache ca-certificates
 COPY --from=build /app/morfeo .
 
+
 EXPOSE 8000
 
 ENV GIN_MODE=release
 
+RUN mkdir -p /app/output /app/input /tmp
+RUN chmod -R 777 /app/output /app/input /tmp
 

@@ -32,6 +32,7 @@ services:
     stdin_open: true
     tty: true
     entrypoint: /bin/sh
+    command:
 
     environment:
       SERVERURL: ${SERVERURL}
@@ -41,9 +42,9 @@ services:
       MONGOAPP: ${MONGOAPP}
       BOT_TOKEN: ${BOT_TOKEN}
       GIN_MODE: release
+      HOME: "/tmp"
 
-    ports:
-      - "8000:8000"
+    user: "${UID}:${GID}"
 
     volumes:
       - ./tmp:/tmp

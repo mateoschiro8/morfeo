@@ -6,3 +6,6 @@ MONGOCLUSTER="cluster0.gtwihqu.mongodb.net"
 MONGOAPP="Cluster0"
 
 BOT_TOKEN="8290836915:AAEj7HHBTJiRz72tzh-j0RGQPUH2TnVK36A"
+
+UID=""
+GID=""

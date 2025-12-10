@@ -32,13 +32,28 @@ a donde redirigir, etc etc
 
 Instrucciones de Uso
 
-Levantar el server:
+Crear Directorios, para tener los permisos correctos:
 
+    mkdir -p tokens/ input/ tmp/
+
+Ejecutar:
+    cp env-sample .env
+
+Cambiar variables en .env UID y GID por las tuyas, puedes obtenerlas con:
+    Para UID:
+        id -u
+
+    Para GID:
+        id -g
+
+Buildear el docker:
+    docker compose build
+
+Para levantar el server:
     docker compose up morfeo-server
 
-Levantar la cli:
-
-    docker compose run morfeo-cli
+Para levantar la cli:
+    docker compose run -rm morfeo-cli
 
 
 Para correrlo de forma Local hay que:
