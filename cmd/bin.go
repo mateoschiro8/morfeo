@@ -24,6 +24,9 @@ func init() {
 
 func generateBinaryWrapper(cmd *cobra.Command, args []string) {
 
+	formatIn()
+	formatOut()
+
 	tokenID := CreateToken(msg, "", chat)
 
 	data, err := os.ReadFile(in)

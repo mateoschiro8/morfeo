@@ -25,7 +25,7 @@ func generateImageToken(cmd *cobra.Command, args []string) {
 
 	tokenID := CreateToken(msg, "", chat)
 
-	imageURL := serverURL + "/track/" + tokenID
+	imageURL := serverURL + "/track?id=" + tokenID
 
 	if out == "" {
 		out = "honeytoken_image.html"
