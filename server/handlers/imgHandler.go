@@ -8,9 +8,9 @@ import (
 
 func HandleIMGs(r *gin.Engine) {
 
-	r.GET("/track", func(c *gin.Context) {
+	r.GET("/track/:id", func(c *gin.Context) {
 
-		tokenID := c.Query("id")
+		tokenID := c.Param("id")
 
 		controller := c.MustGet("tokenController").(*TokenController)
 		token, err := controller.GetToken(tokenID)
