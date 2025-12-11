@@ -12,15 +12,23 @@
 
 = Manual de uso
 
-Para poder usar la herramienta, es necesario clonar el repositorio y tener #link("https://go.dev/")[#hl[Golang]] instalado. Luego, se deben ejecutar los siguientes comandos en la raiz del repositorio:
+Hay dos maneras de utilizar la herramienta. La primer manera es compilando el binario manualmente a partir del código fuente. La segunda manera es mediante un contenedor de docker que la compila, y utilizar los comandos dentro del contenedor.   
+
+En ambos casos, luego de clonado el repositorio debe ejecutarse el siguiente comando:
 
 #codeblock[`$ cp env-samples .env`]
+
+para tener disponibles las variables de ambiente. Además, para poder recibir las alertas es necesario activar el bot que las manda. Para hacer esto simplemente se debe entrar al #link("https://t.me/morfeoSeguroBot")[#hl[#underline[chat]]] con el mismo, y darle #hl[`start`]. 
+
+== Compilando el código fuente
+
+Teniendo #link("https://go.dev/")[#hl[Golang]] instalado, se ejecuta en la raiz del repositorio:
 #codeblock[`$ go build`]
 
 Esto generará un ejecutable llamado #hl[`morfeo`]. Luego, al ejecutar
 #codeblock[`$ ./morfeo`]
 desde donde se encuentre, se podrá ver la salida:
-#codeblock[#set text(size: 10pt)
+#codeblock[#set text(size: 12pt)
 ```  
 Usage:
   morfeo [command]
@@ -42,9 +50,9 @@ Use "morfeo [command] --help" for more information about a command
 ```
 ]
 
-Para poder recibir las alertas, es necesario activar el bot que las manda. Para hacer esto, se entra al #link("https://t.me/morfeoSeguroBot ")[#hl[#underline[chat]]] con el mismo, y se le da #hl[`start`]. 
 
-Luego, simplemente se ejecuta #hl[`./morfeo [command] [flags]`]. En caso de necesitar más información sobre un comando, ejecutarlo sin flags o con la flag #hl[`--help`] imprime más detalles sobre el mismo. 
+
+Luego, se ejecuta #hl[`./morfeo [command] [flags]`]. En caso de necesitar más información sobre un comando, ejecutarlo sin flags o con la flag #hl[`--help`] imprime más detalles sobre el mismo. 
 
 Algunos comandos tienen flags que otros no tienen, pero hay dos flags que todos los comandos comparten:
 + #hl[`--msg`]: Un mensaje para identificar al token que está siendo creado, que será mandado en el mensaje de alerta cuando el mismo sea activado.
@@ -58,3 +66,23 @@ Para crear un código QR que actúe como honeytoken:
 Esto genera un QR que al ser escaneado produce la siguiente alerta mediante Telegram:
 
 #align(center, image("img/ejemplo.jpeg", width: 60%))
+
+== Utilizando un contenedor de Docker
+
+Si se desea en su lugar utilizar un contenedor de #link("https://www.docker.com/")[#hl[Docker]], deben seguirse los siguientes pasos.
+Primero, crear los directorios que serán utilizados como entrada y salida con el contenedor:
+#codeblock[`$ mkdir tokens input tmp`]
+
+Luego, deben completarse las variables del #hl[`UID`] y #hl[`GID`] del #hl[`.env`] con los valores devueltos por los siguientes comandos, respectivamente: #hl[`id -u`] e #hl[`id -g`].
+
+Luego, se realiza un build del contenedor:
+#codeblock[`$ docker compose build`]
+
+Y finalmente se ejecuta:
+#codeblock[`$ docker compose run --rm morfeo-cli`]
+
+Esto abre una terminal en el directorio #hl[`/app`] del contenedor. En él, se encuentra el binario #hl[`morfeo`] ya compilado, y dos directorios más: #hl[`/app/input`] y #hl[`/app/output`]. Estos directorios se encuentran linkeados a los directorios creados previamente. 
+
+Para pasarle los archivos de entrada, los mismos deben ubicarse en el directorio #hl[`./input`] del host, y los mismos aparecerán en #hl[`/app/input`] del contenedor. De forma inversa, la herramienta generará los archivos en #hl[`/app/output`], y los mismos podrán ser encontrados en #hl[`./tokens`] del host. 
+
+Luego, la utilización de la herramienta es similar a la mencionada previamente.
