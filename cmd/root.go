@@ -82,7 +82,7 @@ func formatIn() {
 }
 
 func formatOut() {
-	if out == "" {
+	if out == "" && in != "" {
 		var directories = strings.Split(in, "/")
 		out = "output/" + directories[len(directories)-1]
 	}else{
