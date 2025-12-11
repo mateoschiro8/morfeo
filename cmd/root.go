@@ -3,9 +3,11 @@ package cmd
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/joho/godotenv"
 	"github.com/mateoschiro8/morfeo/server/types"
@@ -70,4 +72,29 @@ func CreateToken(msg string, extra string, chat string) string {
 	tokenID := string(respBytes)
 
 	return tokenID
+}
+
+func formatIn() {
+	if strings.Split(in, "/")[0] != "input" {
+		in = "input/" + in
+	}
+	fmt.Printf("El token se creara en base a: %v\n", in)
+}
+
+func formatOut() {
+	if out == "" {
+		var directories = strings.Split(in, "/")
+		out = "output/" + directories[len(directories)-1]
+	}else{
+		var directories = strings.Split(out, "/")
+		if(directories[0]=="tokens"){
+			directories[0]="output"
+			out = strings.Join(directories, "/")
+		}else if(directories[0] != "output"){
+			out = "output/" + out
+		}
+	}
+
+	fmt.Printf("El token se creara en: %v\n", out)
+
 }

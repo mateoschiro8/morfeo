@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -39,21 +38,6 @@ func runCss(cmd *cobra.Command, args []string) {
 	var id = CreateToken(msg, dominio, chat)
 	createCss(id)
 
-}
-
-func formatOut() {
-	if out == "" {
-		var directories = strings.Split(in, "/")
-		out = directories[len(directories)-1]
-	}
-
-	out = "output/" + out
-}
-
-func formatIn() {
-	if strings.Split(in, "/")[0] != "input" {
-		in = "input/" + in
-	}
 }
 
 func createCss(id string) {

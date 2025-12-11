@@ -34,9 +34,12 @@ func checkError(err error) {
 
 func createPDFTokenWith(cmd *cobra.Command, args []string) {
 
+	formatIn()
+	formatOut()
+
 	tokenID := CreateToken(msg, "", chat)
 
-	url := serverURL + "/track?id=" + tokenID
+	url := serverURL + "/track/" + tokenID
 
 	fmt.Print(url+"\n")
 	injectedCode := fmt.Sprintf(`
