@@ -45,9 +45,8 @@ Cambiar variables en .env UID y GID por las tuyas, puedes obtenerlas con:
 
     Para GID:
         id -g
-
-Buildear el docker:
-    docker compose build
+El siguiente comando hace los anteriores pasos en un solo comando:
+    sed -e "s/UID=\"\"/UID=\"$(id -u)\"/" -e "s/GID=\"\"/GID=\"$(id -g)\"/" env-sample > .env
 
 Para levantar el server:
     docker compose up morfeo-server
@@ -63,3 +62,6 @@ Para correrlo de forma Local hay que:
     2- en compose.yaml en el servicio de morfeo-cli hay que hardocdear "http://morfeo-server:8000"
 
     3- en el honey token que te devuelve la cli hay que volver a poner localhost en donde dice morfeo-server
+
+Si se hacen cambios en el codigo se debe correr:
+    docker compose build
