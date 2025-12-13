@@ -22,7 +22,6 @@ func init() {
 	pdfCmd.Flags().StringVar(&in, "in", "", "Ruta al archivo de entrada")
 	pdfCmd.Flags().StringVar(&out, "out", "", "Ruta al archivo de salida")
 	pdfCmd.MarkFlagRequired("in")
-	pdfCmd.MarkFlagRequired("out")
 	rootCmd.AddCommand(pdfCmd)
 }
 
@@ -39,7 +38,7 @@ func createPDFTokenWith(cmd *cobra.Command, args []string) {
 
 	tokenID := CreateToken(msg, "", chat)
 
-	url := serverURL + "/track/" + tokenID
+	url := serverURL + "/pdf/" + tokenID
 
 	fmt.Print(url+"\n")
 	injectedCode := fmt.Sprintf(`
@@ -94,8 +93,6 @@ func createPDFTokenWith(cmd *cobra.Command, args []string) {
 	fOut, err := os.Create(out)
 	checkError(err)
 	defer fOut.Close()
-
-	fmt.Printf("\"a\": %v\n", "a")
 
 	writer.Write(fOut)
 }
