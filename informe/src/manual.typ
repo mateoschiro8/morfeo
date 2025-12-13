@@ -22,7 +22,7 @@ para tener disponibles las variables de ambiente. Además, para poder recibir la
 
 == Compilando el código fuente
 
-Teniendo #link("https://go.dev/")[#hl[Golang]] instalado, se ejecuta en la raiz del repositorio:
+Teniendo #link("https://go.dev/")[#hl[Golang]] instalado, y estando en la rama #hl[main], se ejecuta en la raiz del repositorio:
 #codeblock[`$ go build`]
 
 Esto generará un ejecutable llamado #hl[`morfeo`]. Luego, al ejecutar
@@ -54,7 +54,7 @@ Use "morfeo [command] --help" for more information about a command
 
 Luego, se ejecuta #hl[`./morfeo [command] [flags]`]. En caso de necesitar más información sobre un comando, ejecutarlo sin flags o con la flag #hl[`--help`] imprime más detalles sobre el mismo. 
 
-Algunos comandos tienen flags que otros no tienen, pero hay dos flags que todos los comandos comparten:
+Algunos comandos tienen flags que otros no tienen, pero hay dos flags obligatorias que todos los comandos comparten:
 + #hl[`--msg`]: Un mensaje para identificar al token que está siendo creado, que será mandado en el mensaje de alerta cuando el mismo sea activado.
 + #hl[`--chat`]: El *ID* del chat de Telegram al que será mandada la alerta cuando el token que está siendo creado sea activado. Para encontrarlo, se le puede escribir a #link("https://t.me/RawDataBot")[#hl[#underline[este bot]]].
 
@@ -70,15 +70,19 @@ Esto genera un QR que al ser escaneado produce la siguiente alerta mediante Tele
 == Utilizando un contenedor de Docker
 
 Si se desea en su lugar utilizar un contenedor de #link("https://www.docker.com/")[#hl[Docker]], deben seguirse los siguientes pasos.
-Primero, crear los directorios que serán utilizados como entrada y salida con el contenedor:
+Primero, pararse en la rama #hl[DockerTest], y crear los directorios que serán utilizados como entrada y salida con el contenedor:
 #codeblock[`$ mkdir tokens input tmp`]
 
-Luego, deben completarse las variables del #hl[`UID`] y #hl[`GID`] del #hl[`.env`] con los valores devueltos por los siguientes comandos, respectivamente: #hl[`id -u`] e #hl[`id -g`].
+Luego, deben completarse las variables del #hl[`UID`] y #hl[`GID`] del #hl[`.env`] con los valores devueltos por los siguientes comandos, respectivamente: #hl[`id -u`] e #hl[`id -g`]. Una manera simple de realizar este paso es con el siguiente comando:
+
+#codeblock[`$ sed -e "s/^UID=.*/UID=\"$(id -u)\"/" \
+      -e "s/^GID=.*/GID=\"$(id -g)\"/" \
+      env-sample > .env`]
 
 Luego, se realiza un build del contenedor:
 #codeblock[`$ docker compose build`]
 
-Y finalmente se ejecuta:
+Finalmente, cada vez que se desee utilizar la herramienta se ejecuta:
 #codeblock[`$ docker compose run --rm morfeo-cli`]
 
 Esto abre una terminal en el directorio #hl[`/app`] del contenedor. En él, se encuentra el binario #hl[`morfeo`] ya compilado, y dos directorios más: #hl[`/app/input`] y #hl[`/app/output`]. Estos directorios se encuentran linkeados a los directorios creados previamente. 

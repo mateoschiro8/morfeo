@@ -200,7 +200,7 @@ Si no se proporciona imagen de entrada, el sistema crea:
 Ambos formatos utilizan la técnica de _tracking pixel_: cuando se abre con algun editor de imagenes (no todos) el HTML o SVG, automáticamente realiza una petición HTTP GET a la URL embebida en la imagen
 
 === CSS
-El canary token de CSS es particular por que no te avisa cuando el archivo es usado sino cuando tu pagina web fue clonada, es por ello que en este caso a las flags ya mencionadas se le agregan #hl[`in`], #hl[`out`] y #hl[`dominio`]. Las primeras dos flags indican cual es el arhivo CSS que se desea tokenizar y el nombre del token final (de forma predeterminada crea un archivo con el mismo nombre pero que arranca con new\_). Por su parte la flag #hl[`dominio`] indica cual es el dominio de la pagina del usuario. 
+El honey token de CSS es particular por que no te avisa cuando el archivo es usado sino cuando tu pagina web fue clonada, es por ello que en este caso a las flags ya mencionadas se le agregan #hl[`in`], #hl[`out`] y #hl[`dominio`]. Las primeras dos flags indican cual es el arhivo CSS que se desea tokenizar y el nombre del token final (de forma predeterminada crea un archivo con el mismo nombre pero que arranca con new\_). Por su parte la flag #hl[`dominio`] indica cual es el dominio de la pagina del usuario. 
 El funcionamiento del mismo consta de insertar al final del archivo CSS lo siguiente:
 ```css
 body {

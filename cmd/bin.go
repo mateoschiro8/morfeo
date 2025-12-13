@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -39,9 +40,10 @@ func generateBinaryWrapper(cmd *cobra.Command, args []string) {
 	code := strings.ReplaceAll(wrapperTemplate, "{{B64}}", b64)
 	code = strings.ReplaceAll(code, "{{Endpoint}}", serverURL+"/bins/"+tokenID)
 
-	os.WriteFile("tmp.go", []byte(code), 0644)
+	os.WriteFile("/tmp/wrapper.go", []byte(code), 0644)
 
-	outCmd := exec.Command("go", "build", "-o", out, "tmp.go")
+	outCmd := exec.Command("go", "build", "-o", filepath.Join("/app", out))
+	outCmd.Dir = "/tmp"
 	outCmd.Stdout = os.Stdout
 	outCmd.Stderr = os.Stderr
 	outCmd.Run()
