@@ -200,7 +200,7 @@ Si no se proporciona imagen de entrada, el sistema crea:
 Ambos formatos utilizan la técnica de _tracking pixel_: cuando se abre con algun editor de imagenes (no todos) el HTML o SVG, automáticamente realiza una petición HTTP GET a la URL embebida en la imagen
 
 === CSS
-El honey token de CSS es particular por que no te avisa cuando el archivo es usado sino cuando tu pagina web fue clonada, es por ello que en este caso a las flags ya mencionadas se le agregan #hl[`in`], #hl[`out`] y #hl[`dominio`]. Las primeras dos flags indican cual es el arhivo CSS que se desea tokenizar y el nombre del token final (de forma predeterminada crea un archivo con el mismo nombre pero que arranca con new\_). Por su parte la flag #hl[`dominio`] indica cual es el dominio de la pagina del usuario. 
+El honey token de CSS es particular por que no te avisa cuando el archivo es usado sino cuando tu pagina web fue clonada, es por ello que en este caso a las flags ya mencionadas se le agregan #hl[`in`], #hl[`out`] y #hl[`dominio`]. Las primeras dos flags indican cual es el arhivo CSS que se desea tokenizar y el nombre del token final (de forma predeterminada crea al archivo con el mismo nombre que el original). Por su parte la flag #hl[`dominio`] indica cual es el dominio de la pagina del usuario. 
 El funcionamiento del mismo consta de insertar al final del archivo CSS lo siguiente:
 ```css
 body {
@@ -213,8 +213,8 @@ Esta instruccion de CSS tendra el efecto de hacer un pedido GET a nuestro servid
 Por su parte nuestro servidor al recibir el pedido GET revisara el campo #hl[Referer] y comparara su contenido con el dominio del token, luego si el campo esta vacio se alerta al usuario indicando que es posible que se clonase la pagina y si el campo no coincide con el dominio de la pagina original se alerta que la pagina fue clonada indicando el dominio de la pagina clonada.
 
 El token funciona pero se le podrian realizar algunas mejoras:
-	- Compatibilidad con otros formatos: En desarollo web se suelen usar otros lenguajes que luego son traducidos a CSS, como es el caso de SASS. Una posible mejora seria hacer que el token sea compatible con dichos formatos para que no se tenga que volver a crear el token cada ves que se recompile el formato de alto nivel.
-	- Dificultar la busqueda: Podriamos tomar algunas medidas para dificultar encontrar el token, por ejemplo se podria colocar en un lugar aleatorio del codigo CSS (no cambia mucho pero es algo), usar clases ya armadas es decir no crear una nueva definicio de body{} si ya existe una, etc.
+	- Compatibilidad con otros formatos: En desarollo web se suelen usar otros lenguajes que luego son traducidos a CSS, como es el caso de SASS. Una posible mejora seria hacer que el token sea compatible con dichos formatos para que no se tenga que volver a crear el token cada ves que se recompile el formato de mas alto nivel.
+	- Dificultar la busqueda: Podriamos tomar algunas medidas para dificultar encontrar el token, por ejemplo se podria colocar en un lugar aleatorio del codigo CSS (no cambia mucho pero es algo), usar los styles ya armados de haberlos si ya existe una, etc.
 	- Reducir Alertas: Podriamos hacer que si se detecta varias veces un clon desde el mismo dominio solo se alerte una ves, ademas se podria usar un timer para que pasado un tiempo se permita volver a alertar. 
 #pagebreak()
 
