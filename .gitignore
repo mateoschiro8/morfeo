@@ -8,3 +8,6 @@ pag-ejemplo/*
 *.css
 demo/
 demo/*
+tmp/
+input/
+tokens/
