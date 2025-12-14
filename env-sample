@@ -1,4 +1,4 @@
-SERVERURL="https://morfeo-c8s3.onrender.com"
+SERVERURL="http://localhost:8000"
 
 MONGOUSER="morfeo"
 MONGOPW="ciberseguro"

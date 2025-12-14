@@ -19,5 +19,7 @@ func HandlePDFs(r *gin.Engine) {
 		}
 		alertText := "Fue activado el token " + strings.ToLower(token.Msg) + " desde la IP: " + c.ClientIP()
 		Alert(alertText, token.Chat)
+
+		c.Redirect(302, "https://www.adobe.com/ar/acrobat.html")
 	})
 }

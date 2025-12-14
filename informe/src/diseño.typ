@@ -37,7 +37,7 @@ Explicación:
 
 Notar que en el paso 2, al comunicarse con el server, no se indica qué tipo de token se está creando. No existe distinción desde el lado del server en los distintos tipos de tokens. Esto facilita el manejo de las activaciones, pero limita a que todos los tokens generados tengan el mismo método de _call-home_: una solicitud *GET* al servidor.
 
-Cuando un token es activado, la solicitud *GET* es mandada a una URL con la forma #hl[`/{tokenType}/{tokenID}`]. La distinción del tipo de token en la URL permite que el handler ejecute los pasos adicionales (además de la alerta) de los tokens que así lo requieran (por ejemplo, la redirección en el código QR).
+Cuando un honeytoken es activado, la solicitud *GET* es mandada a una URL de la forma \ #hl[`/{tokenType}/{tokenID}`]. La distinción del tipo de token en la URL permite que el handler ejecute los pasos adicionales (además de la alerta) de los tokens que así lo requieran (por ejemplo, la redirección en el código QR).
 
 #pagebreak()
 
@@ -47,7 +47,7 @@ Cuando un token es activado, la solicitud *GET* es mandada a una URL con la form
 
 La *CLI* se encuentra implementada en #link("https://go.dev/")[#hl[Golang]], y fue utilizada una librería de creación de *CLIs* llamada #link("https://pkg.go.dev/github.com/spf13/cobra")[#hl[Cobra]]. La misma permite definir y agregar fácilmente nuevos comandos, además de realizar el _parsing_ de las flags recibidas.
 
-Todos los tokens toman como entrada necesaria dos flags: *msg* y *chat*. La flag *msg* define qué mensaje será mandado cuando se realice la alerta de activación del token, y la flag *chat* es el ID del chat de Telegram donde será mandada la alerta. Cada comando puede tomar también otras flags más específicas de su funcionamiento. 
+Todos los tokens toman como entrada necesaria dos flags: #hl[`--msg`] y #hl[`--chat`]. La flag *msg* define qué mensaje será mandado cuando se realice la alerta de activación del token, y la flag *chat* es el ID del chat de Telegram donde será mandada la alerta. Cada comando puede tomar también otras flags más específicas de su funcionamiento. 
 
 Independientemente del tipo de token a crear, cada comando recibe los flags correspondientes y utiliza la siguiente función de creación (se omitió el manejo de errores para ahorrar espacio):
 
@@ -77,7 +77,11 @@ Luego, transforma esa información a formato JSON, y lo manda en el cuerpo del p
 Esta arquitectura permite que agregar un nuevo formato de honeytoken sea tan simple como agregar un comando nuevo, y que el mismo utilice la función #hl[`createToken`] (además de definir el correspondiente handler en el server). Se detallan a continuación el funcionamiento e implementación de los distintos tipos de tokens disponibles.
 
 === QR 
-#lorem(10)
+El honeytoken del QR es uno de los más sencillos, y no requiere muchos parametros para funcionar. La idea de este token es detectar el escaneo de un código QR. 
+
+Luego de la creación del token mediante la función #hl[`createToken`], se arma una URL apuntando a nuestro servidor, que es la que se codifica en el código QR (mediante una libreria llamada _"barcode"_). Luego, una vez que alguien entra a esa URL, el servidor detecta el pedido y genera la alerta. 
+
+Para disfrazar el uso del token, el mismo tiene una URL a la cual la persona que lo escanea es redirigido. Por default, esta URL es a Google, pero la misma puede configurarse mediante la flag #hl[`--redirect`].
 
 === Binario
 
@@ -157,65 +161,85 @@ Luego, decodifica el binario original compilado, crea un directorio temporal en 
 Finalmente, crea un comando de ejecución del archivo recién creado, le pasa los mismos _file descriptors_ de entrada, salida y error, y lo ejecuta. Además, en caso de que el binario original finalice con algún código de error, el binario wrapper finaliza de la misma forma.
 
 === PDF 
-#lorem(10)
+La idea de este honeytoken es insertar en un documento PDF código JavaScript para alertar cuando dicho documento es abierto por un tercero. Se basa en la capacidad de los documentos PDF de ejecutar código JavaScript al momento de su apertura, especialmente en #hl[Adobe Acrobat Reader]. La función que crea estos tokens es la siguiente:
+
+```go
+func createPDFTokenWith(cmd *cobra.Command, args []string) {
+
+	tokenID := CreateToken(msg, "", chat)
+	url := serverURL + "/pdf/" + tokenID
+
+	injectedCode := fmt.Sprintf(`
+        var cURL = "%s"; 
+        app.launchURL(cURL, true); 
+    `, url)
+
+	f, err := os.Open(in)
+	defer f.Close()
+
+	reader, err := model.NewPdfReader(f)
+	nPages, err := reader.GetNumPages()
+	writer := model.NewPdfWriter()
+
+	for i := 1; i <= nPages; i++ {
+		page, err := reader.GetPage(i)
+		err = writer.AddPage(page)
+	}
+
+	dict := core.MakeDict()
+	dict.Set("S", core.MakeName("JavaScript"))
+	dict.Set("JS", core.MakeString(injectedCode))
+	err = writer.SetOpenAction(dict)
+
+	fOut, err := os.Create(out)
+	defer fOut.Close()
+
+	writer.Write(fOut)
+}
+```
+
+Primero se genera un #hl[tokenID] y se construye la URL de activación que apunta al servidor. Luego, se genera el código a inyectar (`injectedCode`) que usará la función `app.launchURL()` para intentar abrir la URL de activación: 
+```js
+app.launchURL('https://{serverURL}/bins/{tokenID}', true);
+```
+
+Se lee el archivo de entrada, y se copian todas las páginas del PDF original a uno nuevo sin modificar su contenido. En PDF, el mecanismo para ejecutar código al abrir es la *OpenAction*. Se crea un diccionario de acción y se configura para ser de tipo JavaScript con #hl[`/S /JavaScript`]. El código generado se establece como el valor de la clave #hl[`/JS`].
+		
+Finalmente, el diccionario se establece como el #hl[OpenAction] del documento utilizando `writer.SetOpenAction(dict)` y se guarda el contenido del PDF modificado (páginas originales + el OpenAction inyectado) en el archivo de salida `out`.
+
+Cuando el PDF se abre en un visor compatible, se ejecuta el JavaScript que realiza una #hl[petición GET] a la URL de nuestro servidor, y se realiza la alerta. Además, como este código JavaScript abre un navegador, también se realiza una redirección a la página de Adobe, para esconder el token. 
 
 === IMG 
 
-En primer lugar, el comando acepta los siguientes flags:
+La idea de este honeytoken es insertar en un archivo HTML o SVG un recurso externo (en este caso, una imagen) que se encuentra ubicado en nuestro servidor. Luego, cuando el archivo es abierto y el recurso es cargado, el servidor detecta esa apertura y realiza la alerta.
 
--- `msg` (obligatorio): Identificador único del honeytoken
+Cuando se pasa el parametro *`--in`*, el programa se fija si existe la imagen, extrae las dimensiones de la imagen usando `image.DecodeConfig()`, y genera un archivo HTML que contiene la imagen original visible y un pixel invisible de 1x1 que apunta a la URL indicada.
 
--- `chat` (obligatorio): ID del chat de Telegram donde se recibirá la alerta al activarse
+Ademas, se genera un archivo SVG con estructura similar: un elemento `<image>` principal con la imagen original, un elemento `<image>` de 1x1, y un ViewBox configurado según las dimensiones originales.
 
--- `in` (opcional): Path a una imagen existente que se desee utilizar para generar el honeytoken
-
--- `out` (opcional): Ruta del archivo HTML de salida (por defecto: honeytoken_image.html)
-
-Cuando se pasa el parametro *`--in`*, el programa:
-
- + Se fija si existe la imagen
-
-+ Extrae las dimensiones de la imagen usando `image.DecodeConfig()`
-
-+ Genera un archivo HTML que contiene:
-
-  - La imagen original visible
-
-  - Un pixel invisible de 1x1 que apunta a la URL indicada
-
-Ademas, se genera un archivo SVG con estructura similar:
-
-  - Elemento `<image>` principal con la imagen original
-  
-  - Elemento `<image>` de 1x1
-  
-  - ViewBox configurado según las dimensiones originales
-
-Si no se proporciona imagen de entrada, el sistema crea:
-
-  - HTML con únicamente un pixel invisible sobre un fondo blanco
-  
-  - SVG de 1x1 píxel conteniendo solo el honeytoken
+Si no se proporciona imagen de entrada, el sistema crea un HTML con únicamente un pixel invisible sobre un fondo blanco, y un SVG de 1x1 píxel conteniendo solo el honeytoken
 
 Ambos formatos utilizan la técnica de _tracking pixel_: cuando se abre con algun editor de imagenes (no todos) el HTML o SVG, automáticamente realiza una petición HTTP GET a la URL embebida en la imagen
 
 === CSS
-El canary token de CSS es particular por que no te avisa cuando el archivo es usado sino cuando tu pagina web fue clonada, es por ello que en este caso a las flags ya mencionadas se le agregan #hl[`in`], #hl[`out`] y #hl[`dominio`]. Las primeras dos flags indican cual es el arhivo CSS que se desea tokenizar y el nombre del token final (de forma predeterminada crea un archivo con el mismo nombre pero que arranca con new\_). Por su parte la flag #hl[`dominio`] indica cual es el dominio de la pagina del usuario. 
-El funcionamiento del mismo consta de insertar al final del archivo CSS lo siguiente:
+El honey token de CSS es particular, ya que no detecta cuando el archivo es utilizado, sino que detecta cuando una página web fue clonada. Para ello, este token recibe tres flags adicionales: #hl[`in`], #hl[`out`] y #hl[`dominio`]. Las primeras dos flags indican cuál es el arhivo CSS que se desea tokenizar y el nombre del token final (de forma predeterminada crea al archivo con el mismo nombre que el original). Por su parte la flag #hl[`dominio`] indica cual es el dominio de la pagina del usuario. 
+
+El mismo funciona insertando al final del archivo CSS lo siguiente:
 ```css
 body {
-		background: url(https://morfeo-c8s3.onrender.com/fondo/{token_ID}) !important; 
+	background: url({serverURL}/fondo/{token_ID}) !important; 
 }
 
 ```
-Esta instruccion de CSS tendra el efecto de hacer un pedido GET a nuestro servidor en busca de una imagen, en este pedido los buscadores agregan un header llamado #hl[Referer] el cual indica desde que dominio se hizo el pedido. Por otra parte la flag !important le indica al buscador que no se debe saltear este background, asegurando que siempre se pida.
+Esta instruccion de CSS realiza un pedido GET a nuestro servidor en busca de una imagen. En este pedido, los buscadores agregan un header llamado #hl[Referer] que indica desde qué dominio se hizo el pedido. Además, la flag #hl[!important] le indica al buscador que no se debe saltear este background, asegurando que siempre se pida.
 
-Por su parte nuestro servidor al recibir el pedido GET revisara el campo #hl[Referer] y comparara su contenido con el dominio del token, luego si el campo esta vacio se alerta al usuario indicando que es posible que se clonase la pagina y si el campo no coincide con el dominio de la pagina original se alerta que la pagina fue clonada indicando el dominio de la pagina clonada.
+Cuando el servidor recibe el pedido, revisa el campo #hl[Referer] y compara su contenido con el dominio del token. Si el campo está vacío, se alerta al usuario indicando que es posible que se clonase la pagina, y si el campo no coincide con el dominio de la pagina original, se alerta que la pagina fue clonada, y se indica el dominio de la pagina clonada.
 
-El token funciona pero se le podrian realizar algunas mejoras:
-	- Compatibilidad con otros formatos: En desarollo web se suelen usar otros lenguajes que luego son traducidos a CSS, como es el caso de SASS. Una posible mejora seria hacer que el token sea compatible con dichos formatos para que no se tenga que volver a crear el token cada ves que se recompile el formato de alto nivel.
-	- Dificultar la busqueda: Podriamos tomar algunas medidas para dificultar encontrar el token, por ejemplo se podria colocar en un lugar aleatorio del codigo CSS (no cambia mucho pero es algo), usar clases ya armadas es decir no crear una nueva definicio de body{} si ya existe una, etc.
-	- Reducir Alertas: Podriamos hacer que si se detecta varias veces un clon desde el mismo dominio solo se alerte una ves, ademas se podria usar un timer para que pasado un tiempo se permita volver a alertar. 
+Algunas mejoras que podrían realizarse son:
+- Compatibilidad con otros formatos que luego son traducidos a CSS, como SASS.
+- Tomar algunas medidas para dificultar la busqueda del token, como colocarlo en un lugar aleatorio del codigo CSS, usar los styles ya armados de haberlos si ya existe una, etc.
+
+
 #pagebreak()
 
 == Server

@@ -1,29 +1,9 @@
 # morfeo
-Un generador de Honeytokens. IT IS IN PROCESS
+Un generador de Honeytokens. Su deploy se encuentra [acá](https://morfeo-c8s3.onrender.com/). Es necesario entrar y despertar al server antes de empezar a trabajar.
+
+Para más información del sistema, así como un manual de uso de la herramienta, puede consultarse el [informe](https://github.com/mateoschiro8/morfeo/blob/main/informe/Ciberseguros-Tokensnare.pdf).
+
 
 ## Desarrollo local
 
-Correr ```cp env-sample .env```, completar las variables y luego ```docker compose up``` para levantar el server y ```go run main.go {cmd}``` para la cli.
-
-
-LINKS:
-
-https://github.com/spf13/cobra/blob/v1.10.1/site/content/user_guide.md
-https://pkg.go.dev/github.com/spf13/cobra#section-readme
-
-# IDEA
-
-Cuando se quiere hacer un nuevo honeytoken, se le hace un POST a /tokens, y en el cuerpo del pedido se ponen los datos necesarios para el funcionamiento del token.
-Obligatorio el string msg de identificación. Luego, los más específicos de cada uno. Los campos que no apliquen al caso del token IGUAL DEBEN METERSE CON COSAS RANDOM.
-Del lado del server se crea un struct general que guarda toda esta info. TODOS LOS DATOS DE UserInput DEBEN SER MANDADOS DESDE EL FRONT. Sino no anda el desjsonlisador.
-Luego de crear el token, el server responde con un identificador tipo o2wrui3ehn (o lo que sea).
-El front luego se encarga de agarrar ese identificador y meterlo en una url específica de ese tipo de token. Por ej, si es un qr, el front devuelve la url "/qrs/o2wrui3ehn". 
-El server entonces, al recibir un GET en "/qrs/{id}", usa el id para traer los datos del token, y como sabe que está en qr, sabé qué datos tiene disponibles para mostrar, 
-a donde redirigir, etc etc
-
-
-# TODOs
-    - Que los tokens guarden el CHATID del usuario a quién avisar en en telegram
-    - Rehacer los tokens con la nueva base, y pasar a que usen el GetToken como el de qrs/bins. Tokens restantes: pdf, img, css. Proximos: 
-    - Acomodar las variables globales del cmd (se pueden reutilizar)
-   
+Correr ```cp env-sample .env```, y luego ```go run main.go server --msg a --chat a``` para levantar el server y ```go run main.go {cmd}``` para la cli.
