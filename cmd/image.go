@@ -65,17 +65,17 @@ img { display: block; width: 100%%; height: 100vh; object-fit: contain; }
 </style>
 </head>
 <body>
-<img src="%s" alt="">
+<img src="file://%s" alt="">
 <img src="%s" alt="" style="position:absolute;width:1px;height:1px;opacity:0;">
 </body>
-</html>`, filepath.Base(in), imageURL)
+</html>`, in, imageURL)
 
 		// creo svg
 		svgContent = fmt.Sprintf(`<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 %d %d" preserveAspectRatio="xMidYMid meet" style="width:100%%;height:100vh;background:#2b2b2b">
-  <image href="%s" width="%d" height="%d"/>
+  <image href="file://%s" width="%d" height="%d"/>
   <image href="%s" width="1" height="1" opacity="0"/>
-</svg>`, width, height, filepath.Base(in), width, height, imageURL)
+</svg>`, width, height, in, width, height, imageURL)
 	} else {
 		// si no hay imagen creo html vacio
 		htmlContent = fmt.Sprintf(`<!DOCTYPE html>
