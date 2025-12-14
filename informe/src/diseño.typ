@@ -218,6 +218,26 @@ El token funciona pero se le podrian realizar algunas mejoras:
 	- Reducir Alertas: Podriamos hacer que si se detecta varias veces un clon desde el mismo dominio solo se alerte una ves, ademas se podria usar un timer para que pasado un tiempo se permita volver a alertar. 
 #pagebreak()
 
+=== QR
+
+El honeytoken del QR es uno de los más sencillos de implementar y no requiere muchos parametros para funcionar. 
+
+En nuestra implementación se decidió que acepte 2 parametros: 
+
+#set list(indent: 0.8cm)
+
+- `extra` : El sitio al cual se redirige al escanear el QR
+
+- `out` : El path donde se guarda el token, de forma predeterminada se genera como _qrcode.png_
+
+Luego se genera el QR usando la libreria de Golang _"barcode"_ tomando como parametro la informacion del link al servidor:
+
+```go
+
+	    data := serverURL + "/qrs/" + tokenID
+```
+Luego se crea el archivo PNG y se inserta el QR en la imagen
+
 == Server
 
 El *server* también se encuentra implementado en #link("https://go.dev/")[#hl[Golang]], y fue utilizado un framework de manejo de peticiones *HTTP* y creación de aplicaciones web llamado #link("https://gin-gonic.com/")[#hl[Gin]]. Además, se utiliza una base de datos online llamada #link("https://www.mongodb.com/products/platform/atlas-database")[#hl[MongoDB Atlas]].
