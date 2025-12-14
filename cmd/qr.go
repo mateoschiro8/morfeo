@@ -18,14 +18,11 @@ var qrCmd = &cobra.Command{
 
 func init() {
 	qrCmd.Flags().StringVar(&extra, "redirect", "http://www.google.com", "Sitio al cual redirigir")
-	qrCmd.Flags().StringVar(&out, "out", "", "Path donde guardar token, de forma predeterminada se genera como qrcode.png")
+	qrCmd.Flags().StringVar(&out, "out", "qrcode.png", "Path donde guardar token, de forma predeterminada se genera como qrcode.png")
 	rootCmd.AddCommand(qrCmd)
 }
 
 func generateQRCode(cmd *cobra.Command, args []string) {
-	if (out == ""){
-		out = "qrcode.png"
-	}
 
 	formatOut()
 
