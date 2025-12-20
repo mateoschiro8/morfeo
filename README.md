@@ -5,4 +5,4 @@ Para más información del sistema, así como un manual de uso de la herramienta
 
 ## Desarrollo local
 
-Correr ```cp env-sample .env```, y luego ```go run main.go server --msg a --chat a``` para levantar el server y ```go run main.go {cmd}``` para la cli.
+Correr ```cp env-sample .env```, cambiar ```SERVERURL``` a ```"http://localhost:8000"```, y luego ```go run main.go server --msg a --chat a``` para levantar el server y ```go run main.go {cmd}``` para la cli.
